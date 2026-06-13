@@ -13,7 +13,7 @@ Official sources show:
 - Oracle Java downloads page: JDK 26 is the latest Java SE platform release; JDK 25 is the latest LTS; JDK 21 is the previous LTS.
 - Oracle Java SE documentation index lists current documentation sets for JDK 26, JDK 25, JDK 21, JDK 17, JDK 11, and JDK 8.
 - OpenJDK JDK 25 page states JDK 25 reached General Availability on 2025-09-16.
-- JDK 26 release notes state JDK 26 was released on 2026-03-17, with JDK 26.0.1 released on 2026-04-21.
+- JDK 26 release notes state JDK 26 was released on 2026-03-17.
 
 ## Primary Sources
 
@@ -62,7 +62,8 @@ If no version is known:
 
 - For beginner learning, prefer modern LTS Java and clearly state the assumed version.
 - For production recommendations, prefer latest LTS unless the user asks for latest features.
-- For "latest Java" questions, browse official sources first.
+- For "latest Java" questions, browse official sources first and pass the latest feature release explicitly to helpers that accept `--version`.
+- Most bundled helpers default to the current LTS documentation. Override the version when the project declares a different Java version or when the user asks about the latest feature release.
 
 ## Common Deep Links
 

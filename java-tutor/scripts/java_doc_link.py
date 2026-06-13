@@ -68,13 +68,18 @@ def api_link(symbol: str, version: str) -> str:
     cleaned = symbol.strip()
     if cleaned.endswith(".*"):
         package = cleaned[:-2].replace(".", "/")
+        if version == "8":
+            return f"https://docs.oracle.com/javase/8/docs/api/{package}/package-summary.html"
         module = infer_module(cleaned[:-2])
         return f"https://docs.oracle.com/en/java/javase/{version}/docs/api/{module}/{package}/package-summary.html"
 
     class_name, separator, member = cleaned.partition("#")
-    module = infer_module(class_name)
     path = api_path(class_name)
-    link = f"https://docs.oracle.com/en/java/javase/{version}/docs/api/{module}/{path}.html"
+    if version == "8":
+        link = f"https://docs.oracle.com/javase/8/docs/api/{path}.html"
+    else:
+        module = infer_module(class_name)
+        link = f"https://docs.oracle.com/en/java/javase/{version}/docs/api/{module}/{path}.html"
     if separator:
         link += f"#{member}"
     return link

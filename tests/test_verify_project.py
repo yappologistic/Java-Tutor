@@ -79,6 +79,11 @@ class VerifyProjectTests(unittest.TestCase):
             self.assertTrue(check["url"].startswith(allowed_hosts), check["url"])
             self.assertTrue(check["required"], check["name"])
 
+    def test_release_fact_checks_do_not_require_patch_update_versions(self):
+        for check in RELEASE_FACT_CHECKS:
+            required = " ".join(check["required"])
+            self.assertNotRegex(required, r"JDK \d+\.\d+\.\d+")
+
     def test_topic_urls_are_resolved_before_link_checking(self):
         urls = list(topic_urls())
         self.assertTrue(urls)

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import subprocess
 from pathlib import Path
@@ -60,7 +61,22 @@ def looks_like_test(path: Path) -> bool:
 
 
 def class_name_from_path(path: Path) -> str:
-    return path.stem
+    try:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return path.stem
+    match = re.search(r"^\s*package\s+([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)\s*;", text, flags=re.MULTILINE)
+    return f"{match.group(1)}.{path.stem}" if match else path.stem
+
+
+def fallback_java_files(root: Path) -> list[Path]:
+    ignored_dirs = {"build", "target", "out", ".gradle", ".git"}
+    files = [
+        path
+        for path in root.rglob("*.java")
+        if not any(part in ignored_dirs for part in path.relative_to(root).parts[:-1])
+    ]
+    return sorted(files)
 
 
 def suggest_commands(root: Path, changed_file: str | None = None) -> dict[str, Any]:
@@ -91,7 +107,7 @@ def suggest_commands(root: Path, changed_file: str | None = None) -> dict[str, A
             ]
         )
     else:
-        java_files = sorted(root.glob("*.java"))
+        java_files = fallback_java_files(root)
         if changed_path and changed_path.suffix == ".java":
             commands.append(command_item("single-file", ["javac", str(changed_path)], "Compile the changed Java file directly."))
         elif java_files:

@@ -1,4 +1,4 @@
 interface:
   display_name: "Java Tutor"
   short_description: "Learn, debug, and modernize Java with official docs"
-  default_prompt: "Use $java-tutor to explain this Java concept and link me to the official documentation."
+  default_prompt: "Use $java-tutor to explain, debug, or review this Java issue with the relevant Java version and official documentation links."

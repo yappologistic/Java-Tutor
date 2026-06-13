@@ -8,10 +8,11 @@ else
   repo_root=""
 fi
 source_dir="${repo_root:+$repo_root/java-tutor}"
-repo_url="${JAVA_TUTOR_ARCHIVE_URL:-https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.tar.gz}"
+archive_ref="${JAVA_TUTOR_REF:-main}"
 scope="user"
 action="install"
 temp_root=""
+archive_root=""
 source_kind="local"
 tmp_target=""
 backup_target=""
@@ -27,13 +28,30 @@ while [[ $# -gt 0 ]]; do
     --global)
       scope="global"
       ;;
+    --ref)
+      if [[ $# -lt 2 ]]; then
+        echo "--ref requires a Git ref or tag" >&2
+        exit 2
+      fi
+      archive_ref="$2"
+      shift
+      ;;
     *)
-      echo "Usage: $0 [install|update|uninstall|status] [--user|--global]" >&2
+      echo "Usage: $0 [install|update|uninstall|status] [--user|--global] [--ref <git-ref-or-tag>]" >&2
       exit 2
       ;;
   esac
   shift
 done
+
+if [[ "$archive_ref" == "main" ]]; then
+  archive_path="refs/heads/main"
+elif [[ "$archive_ref" == refs/* ]]; then
+  archive_path="$archive_ref"
+else
+  archive_path="refs/tags/$archive_ref"
+fi
+repo_url="${JAVA_TUTOR_ARCHIVE_URL:-https://github.com/yappologistic/Java-Tutor/archive/$archive_path.tar.gz}"
 
 if [[ "$scope" == "global" ]]; then
   if [[ -n "${CODEX_GLOBAL_HOME:-}" ]]; then
@@ -77,11 +95,17 @@ validate_target() {
 }
 
 looks_like_java_tutor_install() {
-  [[ -f "$target/SKILL.md" || -f "$target/.install-info" ]]
+  if [[ -f "$target/.install-info" ]] && grep -qx "skill=java-tutor" "$target/.install-info"; then
+    return 0
+  fi
+  if [[ -f "$target/SKILL.md" ]] && sed -n '1,12p' "$target/SKILL.md" | grep -Eq '^[[:space:]]*name:[[:space:]]*java-tutor[[:space:]]*$'; then
+    return 0
+  fi
+  return 1
 }
 
 if [[ "$action" == "status" ]]; then
-  if [[ -f "$target/SKILL.md" ]]; then
+  if [[ -f "$target/SKILL.md" ]] && looks_like_java_tutor_install; then
     echo "java-tutor ($scope scope) is installed at $target"
     if [[ -f "$target/.install-info" ]]; then
       installed_at="$(awk -F= '$1 == "installedAtUtc" { sub($1 FS, ""); print; exit }' "$target/.install-info")"
@@ -89,6 +113,9 @@ if [[ "$action" == "status" ]]; then
       echo "Installed at: ${installed_at:-unknown}"
       echo "Installed from: ${installed_from:-unknown}"
     fi
+  elif [[ -e "$target" ]]; then
+    echo "java-tutor ($scope scope) has an unrecognized or partial target at $target" >&2
+    exit 1
   else
     echo "java-tutor ($scope scope) is not installed at $target"
   fi
@@ -135,7 +162,11 @@ if [[ -z "$source_dir" || ! -d "$source_dir" ]]; then
     exit 1
   fi
   tar -xzf "$archive" -C "$temp_root"
-  source_dir="$temp_root/Java-Tutor-main/java-tutor"
+  source_dir="$(find "$temp_root" -type f -path "*/java-tutor/SKILL.md" -print -quit)"
+  if [[ -n "$source_dir" ]]; then
+    source_dir="$(dirname "$source_dir")"
+    archive_root="$(dirname "$source_dir")"
+  fi
 fi
 
 if [[ ! -d "$source_dir" ]]; then
@@ -157,8 +188,8 @@ fi
 license_source=""
 if [[ -n "$repo_root" && -f "$repo_root/LICENSE" ]]; then
   license_source="$repo_root/LICENSE"
-elif [[ "$source_kind" == "archive" && -f "$temp_root/Java-Tutor-main/LICENSE" ]]; then
-  license_source="$temp_root/Java-Tutor-main/LICENSE"
+elif [[ -n "$archive_root" && -f "$archive_root/LICENSE" ]]; then
+  license_source="$archive_root/LICENSE"
 fi
 if [[ -n "$license_source" ]]; then
   cp "$license_source" "$tmp_target/LICENSE"
@@ -179,6 +210,10 @@ find "$tmp_target" -type d -name "__pycache__" -prune -exec rm -rf {} +
 find "$tmp_target" -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
 
 if [[ -d "$target" ]]; then
+  if ! looks_like_java_tutor_install; then
+    echo "Refusing to replace $target because it does not look like a java-tutor skill install" >&2
+    exit 1
+  fi
   backup_target="$skills_dir/.java-tutor.backup.$$"
   rm -rf "$backup_target"
   mv "$target" "$backup_target"

@@ -3,13 +3,24 @@ param(
     [string]$Action = "Install",
 
     [ValidateSet("User", "Global")]
-    [string]$Scope = "User"
+    [string]$Scope = "User",
+
+    [string]$Ref = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-$repoUrl = if ($env:JAVA_TUTOR_ARCHIVE_URL) { $env:JAVA_TUTOR_ARCHIVE_URL } else { "https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.zip" }
+$archiveRef = if ($Ref) { $Ref } elseif ($env:JAVA_TUTOR_REF) { $env:JAVA_TUTOR_REF } else { "main" }
+$archivePath = if ($archiveRef -eq "main") {
+    "refs/heads/main"
+} elseif ($archiveRef.StartsWith("refs/")) {
+    $archiveRef
+} else {
+    "refs/tags/$archiveRef"
+}
+$repoUrl = if ($env:JAVA_TUTOR_ARCHIVE_URL) { $env:JAVA_TUTOR_ARCHIVE_URL } else { "https://github.com/yappologistic/Java-Tutor/archive/$archivePath.zip" }
 $tempRoot = $null
+$archiveRoot = $null
 $sourceKind = "local"
 
 if ($Scope -eq "Global") {
@@ -37,11 +48,28 @@ function Assert-ExpectedTarget {
 }
 
 function Test-JavaTutorInstall {
-    return (Test-Path (Join-Path $target "SKILL.md")) -or (Test-Path (Join-Path $target ".install-info"))
+    $metadataPath = Join-Path $target ".install-info"
+    if (Test-Path $metadataPath) {
+        foreach ($line in Get-Content -LiteralPath $metadataPath) {
+            if ($line -eq "skill=java-tutor") {
+                return $true
+            }
+        }
+    }
+
+    $skillPath = Join-Path $target "SKILL.md"
+    if (Test-Path $skillPath) {
+        foreach ($line in Get-Content -LiteralPath $skillPath -TotalCount 12) {
+            if ($line -match "^\s*name:\s*java-tutor\s*$") {
+                return $true
+            }
+        }
+    }
+    return $false
 }
 
 if ($Action -eq "Status") {
-    if (Test-Path (Join-Path $target "SKILL.md")) {
+    if ((Test-Path (Join-Path $target "SKILL.md")) -and (Test-JavaTutorInstall)) {
         Write-Host "java-tutor ($Scope scope) is installed at $target"
         $metadataPath = Join-Path $target ".install-info"
         if (Test-Path $metadataPath) {
@@ -55,6 +83,9 @@ if ($Action -eq "Status") {
             Write-Host "Installed at: $($metadata.installedAtUtc)"
             Write-Host "Installed from: $($metadata.source)"
         }
+    } elseif (Test-Path $target) {
+        Write-Host "java-tutor ($Scope scope) has an unrecognized or partial target at $target"
+        exit 1
     } else {
         Write-Host "java-tutor ($Scope scope) is not installed at $target"
     }
@@ -89,10 +120,15 @@ if (-not (Test-Path $source)) {
         Invoke-WebRequest -UseBasicParsing -Uri $repoUrl -OutFile $zipPath
     }
     Expand-Archive -LiteralPath $zipPath -DestinationPath $tempRoot -Force
-    $source = Join-Path $tempRoot "Java-Tutor-main\java-tutor"
+    $source = Get-ChildItem -Path $tempRoot -Recurse -Directory -Filter "java-tutor" |
+        Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") } |
+        Select-Object -First 1 -ExpandProperty FullName
+    if ($source) {
+        $archiveRoot = Split-Path -Parent $source
+    }
 }
 
-if (-not (Test-Path $source)) {
+if (-not $source -or -not (Test-Path $source)) {
     throw "Cannot find skill folder: $source"
 }
 
@@ -109,7 +145,7 @@ try {
 
     $licenseSource = $null
     $repoLicense = Join-Path $repoRoot "LICENSE"
-    $archiveLicense = if ($tempRoot) { Join-Path $tempRoot "Java-Tutor-main\LICENSE" } else { $null }
+    $archiveLicense = if ($archiveRoot) { Join-Path $archiveRoot "LICENSE" } else { $null }
     if (Test-Path $repoLicense) {
         $licenseSource = $repoLicense
     } elseif ($archiveLicense -and (Test-Path $archiveLicense)) {
@@ -133,6 +169,9 @@ try {
         Remove-Item -Force
 
     if (Test-Path $target) {
+        if (-not (Test-JavaTutorInstall)) {
+            throw "Refusing to replace $target because it does not look like a java-tutor skill install"
+        }
         Move-Item -LiteralPath $target -Destination $backupTarget
     }
 

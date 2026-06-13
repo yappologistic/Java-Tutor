@@ -18,7 +18,7 @@ For intermediate learners, include API design, collections, exceptions, streams,
 
 For senior developers, focus on tradeoffs: binary/source compatibility, observability, concurrency, memory, API stability, migration cost, and operational behavior.
 
-For multi-session learning plans, run `scripts/java_learning_path.py <level> [--goal topic]` first, then tailor the generated milestones to the learner's time budget, Java version, and project context.
+For multi-session learning plans, run `scripts/java_learning_path.py <beginner|intermediate|professional|senior> [--goal topic]` first, then tailor the generated milestones to the learner's time budget, Java version, and project context. Treat `senior` as the professional track with deeper tradeoff analysis.
 
 ## Debugging
 
@@ -136,7 +136,7 @@ Run `scripts/java_code_review_checklist.py [focus...]` for substantial reviews, 
 
 ## Documentation Links
 
-Use `scripts/java_doc_link.py` for quick candidate links, then verify exactness when the answer relies on details.
+Use `scripts/java_doc_link.py` for quick candidate links, then verify exactness when the answer relies on details. Pass `--version <project-version>` when the project version is known. For "latest Java" answers, browse official sources first and pass the latest feature release explicitly; otherwise helpers generally default to current LTS examples.
 
 Examples:
 

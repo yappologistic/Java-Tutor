@@ -11,6 +11,8 @@ Prefer official documentation over memory. Ground answers in the Java version th
 
 If the Java version is unknown and version-specific behavior matters, ask for the version or infer it from local files (`pom.xml`, `build.gradle`, `gradle.properties`, `.java-version`, `Dockerfile`, CI config, `java --version`). If still unknown, say which version you are assuming. For modern Java guidance, default to the current feature release only after checking the official docs; for conservative production guidance, prefer the current LTS unless the project says otherwise.
 
+Most helper scripts default to the current LTS documentation. Pass `--version <project-version>` explicitly when the user's project version is known, and pass `--version <latest-feature-release>` only after checking official sources for "latest Java" answers.
+
 Use these resources progressively:
 
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
@@ -32,7 +34,7 @@ Use these resources progressively:
 - Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, socket I/O, and URI/URL issues.
 - Use `scripts/java_jdbc_triage.py <issue-or-alias>` for JDBC connection lifecycle, PreparedStatement parameters, transactions, ResultSet handling, batching, SQLException chains, date/time mappings, and LOB streaming.
 - Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
-- Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
+- Use `scripts/java_learning_path.py <beginner|intermediate|professional|senior> [--goal topic]` to create official-doc-backed learning paths. Treat `senior` as the professional track with deeper tradeoff analysis.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_module_triage.py <issue-or-alias>` for JPMS issues such as module descriptors, module path/class path migration, readability, exports/opens, split packages, services, and jlink images.
 - Use `scripts/java_numeric_triage.py <issue-or-alias>` for floating-point precision, BigDecimal scale/rounding, integer overflow, division, numeric parsing/formatting, and numeric equality issues.
@@ -42,7 +44,7 @@ Use these resources progressively:
 - Use `scripts/java_reflection_triage.py <issue-or-alias>` for reflection, annotations, JPMS reflective access, generic type metadata, dynamic proxies, MethodHandle lookup, and record reflection issues.
 - Use `scripts/java_security_triage.py <risk>` for Java security risks such as deserialization, XML parsing, path traversal, secrets/logging, crypto/TLS, or resource exhaustion.
 - Use `scripts/java_text_triage.py <issue-or-alias>` for String comparison, Unicode code points, locale-sensitive case, formatting, text blocks, StringBuilder, normalization/collation, resource bundles, and charset boundaries.
-- Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
+- Use `scripts/java_project_info.py <project-root> --pretty` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs. Use the no-argument form only when the current working directory is explicitly the user's Java project.
 - Use `scripts/java_version_consistency.py <project-root>` when version hints conflict or when source/target/runtime alignment affects the answer.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
 - Use `scripts/java_verify_commands.py <project-root> [--changed-file path]` to choose narrow and broad compile/test commands before verifying a local Java fix.
@@ -168,7 +170,7 @@ When the user is working in a Java repository:
 
 ## Documentation Footer
 
-End substantial Java answers with:
+Include at least one official link for any answer that makes an API, language-rule, JDK-tool, release, preview, deprecation, removal, or version claim. End substantial Java answers with:
 
 ```markdown
 Official docs:

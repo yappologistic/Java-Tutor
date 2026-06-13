@@ -25,6 +25,11 @@ class JavaTopicLinksTests(unittest.TestCase):
         self.assertTrue(any("/java/javase/21/" in link for link in links), links)
         self.assertFalse(any("/java/javase/25/" in link for link in links), links)
 
+    def test_java_8_topic_api_links_use_legacy_doc_shape(self):
+        links = links_for(find_topic("streams"), "8")
+        self.assertIn("https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html", links)
+        self.assertFalse(any("/java/javase/8/docs/api/java.base/" in link for link in links), links)
+
     def test_payload_uses_resolved_links(self):
         payload = payload_for(find_topic("records"), "17")
         self.assertEqual(payload["version"], "17")

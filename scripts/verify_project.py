@@ -274,7 +274,7 @@ RELEASE_FACT_CHECKS = [
     {
         "name": "Oracle JDK 26 release notes",
         "url": "https://www.oracle.com/java/technologies/javase/26all-relnotes.html",
-        "required": ["JDK 26.0.1", "April 21, 2026", "JDK 26", "March 17, 2026"],
+        "required": ["JDK 26", "March 17, 2026"],
     },
 ]
 
@@ -642,7 +642,8 @@ def check_docs() -> None:
         "CODEX_GLOBAL_HOME",
         "MIT License",
         "UseBasicParsing",
-        "Pinned release pattern",
+        "Pinned release install",
+        "JAVA_TUTOR_REF",
     ]:
         if phrase not in combined:
             raise AssertionError(f"Documentation should mention {phrase!r}")
@@ -662,8 +663,8 @@ def check_shell_syntax() -> None:
 def check_installers() -> None:
     with tempfile.TemporaryDirectory(prefix="java-tutor-verify-") as temp_dir:
         temp_path = Path(temp_dir)
-        archive_zip = create_archive_fixture(temp_path, "zip")
-        archive_tgz = create_archive_fixture(temp_path, "gztar")
+        archive_zip = create_archive_fixture(temp_path, "zip", root_name="Java-Tutor-v1.0.0")
+        archive_tgz = create_archive_fixture(temp_path, "gztar", root_name="Java-Tutor-v1.0.0")
 
         powershell = shutil.which("powershell") or shutil.which("pwsh")
         if powershell:
@@ -694,13 +695,13 @@ def check_installers() -> None:
             print("Skipping install.sh smoke test: bash is not available")
 
 
-def create_archive_fixture(temp_path: Path, format_name: str) -> Path:
+def create_archive_fixture(temp_path: Path, format_name: str, *, root_name: str = "Java-Tutor-main") -> Path:
     archive_parent = temp_path / f"archive-{format_name}"
-    fixture_root = archive_parent / "Java-Tutor-main"
+    fixture_root = archive_parent / root_name
     shutil.copytree(SKILL_DIR, fixture_root / "java-tutor")
     shutil.copy2(ROOT / "LICENSE", fixture_root / "LICENSE")
     archive_base = temp_path / f"java-tutor-fixture-{format_name}"
-    return Path(shutil.make_archive(str(archive_base), format_name, root_dir=archive_parent, base_dir="Java-Tutor-main"))
+    return Path(shutil.make_archive(str(archive_base), format_name, root_dir=archive_parent, base_dir=root_name))
 
 
 def assert_installed_payload(home: Path, installer_name: str) -> None:
@@ -709,6 +710,8 @@ def assert_installed_payload(home: Path, installer_name: str) -> None:
         raise AssertionError(f"{installer_name} did not install SKILL.md")
     if not (target / ".install-info").is_file():
         raise AssertionError(f"{installer_name} did not write install metadata")
+    if "skill=java-tutor" not in (target / ".install-info").read_text(encoding="utf-8"):
+        raise AssertionError(f"{installer_name} did not write java-tutor install identity")
     if not (target / "LICENSE").is_file():
         raise AssertionError(f"{installer_name} did not install LICENSE")
 
@@ -735,6 +738,8 @@ def check_powershell_installer(
     if (home / "skills" / "java-tutor" / "SKILL.md").exists():
         raise AssertionError("install.ps1 uninstall left SKILL.md behind")
     assert_powershell_refuses_non_skill_uninstall(powershell, home, command_base, env)
+    assert_powershell_refuses_non_skill_install_or_update(home, command_base, env)
+    assert_powershell_reports_partial_install(home, command_base, env)
 
 
 def check_shell_installer(shell: str, home: Path, script: Path, *, archive_url: str | None = None) -> None:
@@ -756,6 +761,8 @@ def check_shell_installer(shell: str, home: Path, script: Path, *, archive_url: 
     if (home / "skills" / "java-tutor" / "SKILL.md").exists():
         raise AssertionError("install.sh uninstall left SKILL.md behind")
     assert_shell_refuses_non_skill_uninstall(shell, home, prefix, quoted_script, script.parent)
+    assert_shell_refuses_non_skill_install_or_update(shell, home, prefix, quoted_script, script.parent)
+    assert_shell_reports_partial_install(shell, home, prefix, quoted_script, script.parent)
 
 
 def check_shell_stream_installer(shell: str, home: Path, *, archive_url: str) -> None:
@@ -791,6 +798,35 @@ def assert_powershell_refuses_non_skill_uninstall(
     shutil.rmtree(target)
 
 
+def assert_powershell_refuses_non_skill_install_or_update(
+    home: Path,
+    command_base: list[str],
+    env: dict[str, str],
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    marker = target / "not-a-skill.txt"
+    marker.write_text("do not replace\n", encoding="utf-8")
+    run_with_env_expect_failure([*command_base, "-Action", "Status"], env)
+    run_with_env_expect_failure(command_base, env)
+    run_with_env_expect_failure([*command_base, "-Action", "Update"], env)
+    if not marker.exists():
+        raise AssertionError("install.ps1 replaced a non-skill install target")
+    shutil.rmtree(target)
+
+
+def assert_powershell_reports_partial_install(
+    home: Path,
+    command_base: list[str],
+    env: dict[str, str],
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    (target / ".install-info").write_text("skill=java-tutor\n", encoding="utf-8")
+    run_with_env_expect_failure([*command_base, "-Action", "Status"], env)
+    shutil.rmtree(target)
+
+
 def assert_shell_refuses_non_skill_uninstall(
     shell: str,
     home: Path,
@@ -805,6 +841,39 @@ def assert_shell_refuses_non_skill_uninstall(
     run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script} uninstall", cwd=cwd)
     if not marker.exists():
         raise AssertionError("install.sh deleted a non-skill install target")
+    shutil.rmtree(target)
+
+
+def assert_shell_refuses_non_skill_install_or_update(
+    shell: str,
+    home: Path,
+    prefix: str,
+    quoted_script: str,
+    cwd: Path,
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    marker = target / "not-a-skill.txt"
+    marker.write_text("do not replace\n", encoding="utf-8")
+    run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script} status", cwd=cwd)
+    run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script}", cwd=cwd)
+    run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script} update", cwd=cwd)
+    if not marker.exists():
+        raise AssertionError("install.sh replaced a non-skill install target")
+    shutil.rmtree(target)
+
+
+def assert_shell_reports_partial_install(
+    shell: str,
+    home: Path,
+    prefix: str,
+    quoted_script: str,
+    cwd: Path,
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    (target / ".install-info").write_text("skill=java-tutor\n", encoding="utf-8")
+    run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script} status", cwd=cwd)
     shutil.rmtree(target)
 
 

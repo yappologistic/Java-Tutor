@@ -168,7 +168,10 @@ def find_topic(query: str) -> Topic:
 
 
 def links_for(topic: Topic, version: str) -> tuple[str, ...]:
-    return tuple(link.format(version=version) for link in topic.links)
+    links = tuple(link.format(version=version) for link in topic.links)
+    if version != "8":
+        return links
+    return tuple(link.replace("https://docs.oracle.com/en/java/javase/8/docs/api/java.base/", "https://docs.oracle.com/javase/8/docs/api/") for link in links)
 
 
 def payload_for(topic: Topic, version: str) -> dict[str, object]:

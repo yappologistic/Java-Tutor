@@ -16,6 +16,12 @@ class JavaDocLinkTests(unittest.TestCase):
             "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/package-summary.html",
         )
 
+    def test_java_8_api_package_link_uses_legacy_doc_shape(self):
+        self.assertEqual(
+            build_link("api", "java.util.stream.*", "8"),
+            "https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html",
+        )
+
     def test_api_member_link(self):
         self.assertEqual(
             build_link("api", "java.lang.String#toUpperCase()", "25"),
@@ -26,6 +32,12 @@ class JavaDocLinkTests(unittest.TestCase):
         self.assertEqual(
             build_link("api", "java.util.Map.Entry", "25"),
             "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.Entry.html",
+        )
+
+    def test_java_8_api_class_link_uses_legacy_doc_shape(self):
+        self.assertEqual(
+            build_link("api", "java.util.Optional", "8"),
+            "https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html",
         )
 
     def test_infers_non_base_module(self):

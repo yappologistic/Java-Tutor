@@ -26,6 +26,16 @@ class JavaVerifyCommandsTests(unittest.TestCase):
             self.assertEqual(result["commands"][0]["scope"], "narrow")
             self.assertIn("-Dtest=ExampleTest", result["commands"][0]["command"])
 
+    def test_maven_test_file_uses_package_qualified_class_when_present(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "pom.xml").write_text("<project />", encoding="utf-8")
+            test_file = root / "src" / "test" / "java" / "com" / "acme" / "ExampleTest.java"
+            test_file.parent.mkdir(parents=True)
+            test_file.write_text("package com.acme;\nclass ExampleTest {}", encoding="utf-8")
+            result = suggest_commands(root, "src/test/java/com/acme/ExampleTest.java")
+            self.assertIn("-Dtest=com.acme.ExampleTest", result["commands"][0]["command"])
+
     def test_gradle_project_prefers_wrapper(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -44,6 +54,16 @@ class JavaVerifyCommandsTests(unittest.TestCase):
             self.assertEqual(result["commands"][0]["scope"], "single-file")
             self.assertIn("javac", result["commands"][0]["command"])
             self.assertEqual(result["commands"][0]["argv"][0], "javac")
+
+    def test_source_tree_without_build_file_suggests_javac(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "src" / "main" / "java" / "Hello.java"
+            source.parent.mkdir(parents=True)
+            source.write_text("class Hello {}", encoding="utf-8")
+            result = suggest_commands(root)
+            self.assertEqual(result["commands"][0]["scope"], "single-file")
+            self.assertEqual(result["commands"][0]["argv"], ["javac", str(source)])
 
     def test_changed_file_with_spaces_is_quoted_in_command_text(self):
         with tempfile.TemporaryDirectory() as tmp:
