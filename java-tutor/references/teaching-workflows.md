@@ -70,6 +70,8 @@ First identify the current and target versions. Then check official release note
 
 Run `scripts/java_migration_plan.py <source-version> <target-version>` to produce a baseline checklist and official migration links.
 
+Run `scripts/java_module_triage.py <issue-or-alias>` when Java 9+ migration or runtime behavior involves module descriptors, module path/class path boundaries, readability, exports/opens, split packages, services, automatic modules, or jlink images.
+
 Run `scripts/java_deprecation_audit.py --target <target-version> --artifact <jar-or-classes>` after compiling when the migration might involve deprecated APIs, APIs marked for removal, removed APIs, removed tools, or JDK internal APIs.
 
 Prioritize low-risk changes:
@@ -135,6 +137,8 @@ python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerExcepti
 python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25
+python java-tutor/scripts/java_module_triage.py add-opens
+python java-tutor/scripts/java_module_triage.py 'split package' --json
 python java-tutor/scripts/java_performance_triage.py gc
 python java-tutor/scripts/java_performance_triage.py memory-leak --json
 python java-tutor/scripts/java_security_triage.py deserialization

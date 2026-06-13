@@ -37,6 +37,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_language_rule.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
+    SKILL_DIR / "scripts" / "java_module_triage.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_security_triage.py",
@@ -101,6 +102,12 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.1",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.2",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.3",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html",
     "https://openjdk.org/jeps/12",
 ]
@@ -200,6 +207,15 @@ def jvm_option_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_jvm_option.official_urls(java_jvm_option.areas())
+
+
+def module_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_module_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_module_triage.official_urls(java_module_triage.issues())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -407,6 +423,7 @@ def check_official_links() -> None:
                 *jvm_option_urls(),
                 *language_rule_urls(),
                 *learning_path_urls(),
+                *module_triage_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
                 *deprecation_audit_urls(),

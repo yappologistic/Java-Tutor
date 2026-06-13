@@ -26,6 +26,7 @@ Use these resources progressively:
 - Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
+- Use `scripts/java_module_triage.py <issue-or-alias>` for JPMS issues such as module descriptors, module path/class path migration, readability, exports/opens, split packages, services, and jlink images.
 - Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
 - Use `scripts/java_security_triage.py <risk>` for Java security risks such as deserialization, XML parsing, path traversal, secrets/logging, crypto/TLS, or resource exhaustion.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
@@ -105,9 +106,10 @@ For migration planning:
 
 1. Identify current and target Java versions.
 2. Run `scripts/java_migration_plan.py <source-version> <target-version>`.
-3. Run `scripts/java_deprecation_audit.py --target <target-version> --artifact <jar-or-classes>` when compiled artifacts are available.
-4. Supplement the generated checklist with project-specific framework, dependency, build, runtime, and CI constraints.
-5. Verify the target release notes and migration guide before making claims about removed APIs, deprecated APIs, or behavioral changes.
+3. Run `scripts/java_module_triage.py <issue-or-alias>` when the migration involves the module path, module descriptors, split packages, illegal reflection, services, or custom runtime images.
+4. Run `scripts/java_deprecation_audit.py --target <target-version> --artifact <jar-or-classes>` when compiled artifacts are available.
+5. Supplement the generated checklist with project-specific framework, dependency, build, runtime, and CI constraints.
+6. Verify the target release notes and migration guide before making claims about removed APIs, deprecated APIs, or behavioral changes.
 
 ## Source Discipline
 

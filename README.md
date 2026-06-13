@@ -20,6 +20,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Triage Java performance symptoms with `java-tutor/scripts/java_performance_triage.py`.
 - Triage Java security risk areas with `java-tutor/scripts/java_security_triage.py`.
 - Helps migrate and modernize Java projects while respecting the configured source/target version.
+- Triage Java module system issues with `java-tutor/scripts/java_module_triage.py`.
 - Plans deprecated, for-removal, removed, and internal API audits with `java-tutor/scripts/java_deprecation_audit.py`.
 - Checks conflicting Java source, target, toolchain, and runtime hints with `java-tutor/scripts/java_version_consistency.py`.
 - Ends substantial answers with direct official documentation links.
