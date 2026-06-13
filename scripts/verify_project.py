@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
+    SKILL_DIR / "scripts" / "java_verify_commands.py",
     ROOT / "README.md",
     ROOT / "INSTALL.md",
     ROOT / "install.ps1",

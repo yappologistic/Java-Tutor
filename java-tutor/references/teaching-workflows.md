@@ -42,6 +42,8 @@ Use `scripts/java_project_info.py <project-root> --pretty` to collect version hi
 
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
 
+Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
+
 ## Modernization and Migration
 
 First identify the current and target versions. Then check official release notes and JEPs for incompatible changes and new features.
@@ -97,4 +99,5 @@ python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_project_info.py . --pretty
 python java-tutor/scripts/java_topic_links.py virtual-threads
 python java-tutor/scripts/java_topic_links.py --list
+python java-tutor/scripts/java_verify_commands.py . --changed-file src/test/java/ExampleTest.java
 ```
