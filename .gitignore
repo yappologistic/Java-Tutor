@@ -1,0 +1,38 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python/test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Java/build artifacts
+target/
+build/
+out/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+replay_pid*
+
+# Logs/temp
+*.log
+tmp/
+temp/
+.tmp*/
+
+# Local environment/secrets
+.env
+.env.*
+!.env.example
