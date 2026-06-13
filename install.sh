@@ -7,6 +7,7 @@ repo_url="https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.ta
 scope="user"
 action="install"
 temp_root=""
+source_kind="local"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -52,6 +53,12 @@ target="$skills_dir/java-tutor"
 if [[ "$action" == "status" ]]; then
   if [[ -f "$target/SKILL.md" ]]; then
     echo "java-tutor ($scope scope) is installed at $target"
+    if [[ -f "$target/.install-info" ]]; then
+      installed_at="$(awk -F= '$1 == "installedAtUtc" { sub($1 FS, ""); print; exit }' "$target/.install-info")"
+      installed_from="$(awk -F= '$1 == "source" { sub($1 FS, ""); print; exit }' "$target/.install-info")"
+      echo "Installed at: ${installed_at:-unknown}"
+      echo "Installed from: ${installed_from:-unknown}"
+    fi
   else
     echo "java-tutor ($scope scope) is not installed at $target"
   fi
@@ -76,6 +83,7 @@ cleanup() {
 trap cleanup EXIT
 
 if [[ ! -d "$source_dir" ]]; then
+  source_kind="archive"
   temp_root="$(mktemp -d)"
   archive="$temp_root/java-tutor.tar.gz"
   if command -v curl >/dev/null 2>&1; then
@@ -98,6 +106,17 @@ fi
 mkdir -p "$skills_dir"
 rm -rf "$target"
 cp -R "$source_dir" "$target"
+if [[ "$source_kind" == "archive" ]]; then
+  install_source="$repo_url"
+else
+  install_source="$source_dir"
+fi
+{
+  echo "skill=java-tutor"
+  echo "scope=$scope"
+  echo "installedAtUtc=$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+  echo "source=$install_source"
+} > "$target/.install-info"
 find "$target" -type d -name "__pycache__" -prune -exec rm -rf {} +
 find "$target" -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
 

@@ -136,6 +136,7 @@ def check_installers() -> None:
     with tempfile.TemporaryDirectory(prefix="java-tutor-verify-") as temp_dir:
         temp_home = Path(temp_dir) / "codex-home"
         skill_file = temp_home / "skills" / "java-tutor" / "SKILL.md"
+        metadata_file = temp_home / "skills" / "java-tutor" / ".install-info"
         env = os.environ.copy()
         env["CODEX_HOME"] = str(temp_home)
 
@@ -151,6 +152,8 @@ def check_installers() -> None:
             run_with_env([powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1"], env)
             if not skill_file.is_file():
                 raise AssertionError("install.ps1 did not install SKILL.md")
+            if not metadata_file.is_file():
+                raise AssertionError("install.ps1 did not write install metadata")
             run_with_env(
                 [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Status"],
                 env,
@@ -177,6 +180,8 @@ def check_installers() -> None:
         run_with_env([shell, "./install.sh"], env)
         if not skill_file.is_file():
             raise AssertionError("install.sh did not install SKILL.md")
+        if not metadata_file.is_file():
+            raise AssertionError("install.sh did not write install metadata")
         run_with_env([shell, "./install.sh", "status"], env)
         run_with_env([shell, "./install.sh", "update"], env)
         if not skill_file.is_file():

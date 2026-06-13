@@ -152,6 +152,8 @@ The installer replaces the installed `java-tutor` folder.
 ./install.sh status
 ```
 
+Status reports the install path and, for installs made with the current installer, the install timestamp and source.
+
 ## Verify Installers and Skill Files
 
 Run:

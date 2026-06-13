@@ -10,6 +10,7 @@ $ErrorActionPreference = "Stop"
 
 $repoUrl = "https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.zip"
 $tempRoot = $null
+$sourceKind = "local"
 
 if ($Scope -eq "Global") {
     if ($env:CODEX_GLOBAL_HOME) {
@@ -29,6 +30,18 @@ $target = Join-Path $skillsDir "java-tutor"
 if ($Action -eq "Status") {
     if (Test-Path (Join-Path $target "SKILL.md")) {
         Write-Host "java-tutor ($Scope scope) is installed at $target"
+        $metadataPath = Join-Path $target ".install-info"
+        if (Test-Path $metadataPath) {
+            $metadata = @{}
+            foreach ($line in Get-Content -LiteralPath $metadataPath) {
+                $separatorIndex = $line.IndexOf("=")
+                if ($separatorIndex -gt 0) {
+                    $metadata[$line.Substring(0, $separatorIndex)] = $line.Substring($separatorIndex + 1)
+                }
+            }
+            Write-Host "Installed at: $($metadata.installedAtUtc)"
+            Write-Host "Installed from: $($metadata.source)"
+        }
     } else {
         Write-Host "java-tutor ($Scope scope) is not installed at $target"
     }
@@ -49,6 +62,7 @@ $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $source = Join-Path $repoRoot "java-tutor"
 
 if (-not (Test-Path $source)) {
+    $sourceKind = "archive"
     $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("java-tutor-" + [System.Guid]::NewGuid().ToString("N"))
     $zipPath = Join-Path $tempRoot "java-tutor.zip"
     New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null
@@ -69,6 +83,14 @@ try {
     }
 
     Copy-Item -Recurse -Path $source -Destination $target
+
+    $installSource = if ($sourceKind -eq "archive") { $repoUrl } else { $source }
+    @(
+        "skill=java-tutor"
+        "scope=$Scope"
+        "installedAtUtc=$((Get-Date).ToUniversalTime().ToString("o"))"
+        "source=$installSource"
+    ) | Set-Content -LiteralPath (Join-Path $target ".install-info") -Encoding UTF8
 
     Get-ChildItem -Path $target -Recurse -Directory -Filter "__pycache__" |
         Remove-Item -Recurse -Force

@@ -98,6 +98,8 @@ Status:
 ./install.sh status
 ```
 
+Status reports the install path and, for installs made with the current installer, the install timestamp and source.
+
 Install globally for all users on the machine:
 
 ```powershell
