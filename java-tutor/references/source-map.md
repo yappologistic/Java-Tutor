@@ -26,6 +26,8 @@ Official sources show:
 | JDK N migration guide | `https://docs.oracle.com/en/java/javase/N/migrate/index.html` |
 | JDK release notes index | `https://www.oracle.com/java/technologies/javase/jdk-relnotes-index.html` |
 | JDK 26 release notes | `https://www.oracle.com/java/technologies/javase/26all-relnotes.html` |
+| Secure Java coding | `https://www.oracle.com/java/technologies/javase/seccodeguide.html` |
+| Java SE security guide | `https://docs.oracle.com/en/java/javase/25/security/index.html` |
 | Java language rules | `https://docs.oracle.com/javase/specs/jls/se25/html/index.html` or matching version |
 | JVM rules | `https://docs.oracle.com/javase/specs/jvms/se25/html/index.html` or matching version |
 | Java SE specifications index | `https://docs.oracle.com/javase/specs/` |

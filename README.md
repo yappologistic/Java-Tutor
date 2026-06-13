@@ -9,6 +9,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Explains Java concepts interactively at the user's level.
 - Fixes Java compile errors, runtime exceptions, test failures, and build issues.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
+- Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Helps migrate and modernize Java projects while respecting the configured source/target version.
 - Ends substantial answers with direct official documentation links.
 

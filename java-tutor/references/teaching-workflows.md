@@ -82,6 +82,8 @@ Lead with bugs and risks:
 
 Recommend style changes only after correctness issues.
 
+Run `scripts/java_code_review_checklist.py [focus...]` for substantial reviews, especially when security, concurrency, resource management, or Java version compatibility could affect the outcome. Use the generated checks as a source-backed review frame, then report only findings that apply to the code under review.
+
 ## Documentation Links
 
 Use `scripts/java_doc_link.py` for quick candidate links, then verify exactness when the answer relies on details.
@@ -100,4 +102,5 @@ python java-tutor/scripts/java_project_info.py . --pretty
 python java-tutor/scripts/java_topic_links.py virtual-threads
 python java-tutor/scripts/java_topic_links.py --list
 python java-tutor/scripts/java_verify_commands.py . --changed-file src/test/java/ExampleTest.java
+python java-tutor/scripts/java_code_review_checklist.py security concurrency
 ```
