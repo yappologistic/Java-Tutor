@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import os
 import re
 import shutil
@@ -50,6 +51,28 @@ OFFICIAL_URLS = [
     "https://dev.java/learn/",
     "https://docs.oracle.com/javase/tutorial/",
 ]
+RELEASE_FACT_CHECKS = [
+    {
+        "name": "Oracle downloads latest release",
+        "url": "https://www.oracle.com/java/technologies/downloads/",
+        "required": ["JDK 26 is the latest release of the Java SE Platform"],
+    },
+    {
+        "name": "Oracle downloads latest LTS",
+        "url": "https://www.oracle.com/java/technologies/downloads/",
+        "required": ["JDK 25 is the latest Long-Term Support (LTS) release of the Java SE Platform"],
+    },
+    {
+        "name": "Oracle Java SE docs current versions",
+        "url": "https://docs.oracle.com/en/java/javase/",
+        "required": ["Current Java SE Versions", "JDK 26", "JDK 25", "JDK 21", "JDK 17", "JDK 11", "JDK 8"],
+    },
+    {
+        "name": "Oracle JDK 26 release notes",
+        "url": "https://www.oracle.com/java/technologies/javase/26all-relnotes.html",
+        "required": ["JDK 26.0.1", "April 21, 2026", "JDK 26", "March 17, 2026"],
+    },
+]
 
 
 def topic_urls() -> Iterable[str]:
@@ -80,6 +103,12 @@ def run(command: list[str], *, timeout: int = 30) -> None:
 def run_with_env(command: list[str], env: dict[str, str], *, timeout: int = 30) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=ROOT, env=env, timeout=timeout, check=True)
+
+
+def normalize_text(text: str) -> str:
+    text = html.unescape(text)
+    text = re.sub(r"<[^>]+>", " ", text)
+    return " ".join(text.split())
 
 
 def check_required_files() -> None:
@@ -229,6 +258,20 @@ def check_official_links() -> None:
             raise AssertionError(f"{url} returned HTTP {status}")
 
 
+def check_release_facts() -> None:
+    opener = urllib.request.build_opener()
+    opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
+    for check in RELEASE_FACT_CHECKS:
+        url = check["url"]
+        print("+ FACT", check["name"], url)
+        with opener.open(url, timeout=20) as response:
+            content_type = response.headers.get_content_charset() or "utf-8"
+            page = normalize_text(response.read().decode(content_type, errors="replace"))
+        for required in check["required"]:
+            if normalize_text(required) not in page:
+                raise AssertionError(f"{check['name']} missing expected official text: {required!r}")
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check-links", action="store_true", help="Check reachability of official Java source URLs")
@@ -242,6 +285,7 @@ def main(argv: list[str]) -> int:
     run_tests()
     if args.check_links:
         check_official_links()
+        check_release_facts()
     print("Project verification passed.")
     return 0
 

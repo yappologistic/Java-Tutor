@@ -6,6 +6,8 @@ Use this file to choose official documentation sources. Verify current release f
 
 Last checked: 2026-06-13.
 
+The project verifier's `--check-links` mode checks these release facts against official Oracle pages.
+
 Official sources show:
 
 - Oracle Java downloads page: JDK 26 is the latest Java SE platform release; JDK 25 is the latest LTS; JDK 21 is the previous LTS.

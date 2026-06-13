@@ -161,6 +161,8 @@ Optionally check official Java source URLs:
 python .\scripts\verify_project.py --check-links
 ```
 
+`--check-links` also checks Oracle page content for the current latest release, current LTS, current documentation versions, and JDK 26 release-note dates.
+
 Run the lower-level validation and script tests:
 
 ```powershell

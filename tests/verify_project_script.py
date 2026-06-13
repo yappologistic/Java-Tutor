@@ -9,4 +9,6 @@ assert spec.loader is not None
 spec.loader.exec_module(module)
 
 OFFICIAL_URLS = module.OFFICIAL_URLS
+RELEASE_FACT_CHECKS = module.RELEASE_FACT_CHECKS
+normalize_text = module.normalize_text
 parse_frontmatter = module.parse_frontmatter
