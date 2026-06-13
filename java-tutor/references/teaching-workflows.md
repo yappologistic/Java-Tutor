@@ -89,4 +89,6 @@ python java-tutor/scripts/java_doc_link.py jls 15 --version 25
 python java-tutor/scripts/java_doc_link.py jep 444
 python java-tutor/scripts/java_doc_link.py release-notes --version 26
 python java-tutor/scripts/java_project_info.py . --pretty
+python java-tutor/scripts/java_topic_links.py virtual-threads
+python java-tutor/scripts/java_topic_links.py --list
 ```

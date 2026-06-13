@@ -70,6 +70,8 @@ Replace `N` with the selected version:
 - Java launcher: `https://docs.oracle.com/en/java/javase/N/docs/specs/man/java.html`
 - JShell: `https://docs.oracle.com/en/java/javase/N/jshell/`
 
+For common Java topics, prefer `scripts/java_topic_links.py <topic>` to get curated official links plus minimum Java version and feature status.
+
 ## Accuracy Checklist
 
 Before finalizing a substantial Java answer:

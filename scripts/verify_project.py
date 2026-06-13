@@ -11,6 +11,7 @@ import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +23,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
+    SKILL_DIR / "scripts" / "java_topic_links.py",
     ROOT / "README.md",
     ROOT / "INSTALL.md",
     ROOT / "install.ps1",
@@ -42,6 +44,16 @@ OFFICIAL_URLS = [
     "https://dev.java/learn/",
     "https://docs.oracle.com/javase/tutorial/",
 ]
+
+
+def topic_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_topic_links
+    finally:
+        sys.path.pop(0)
+    for topic in java_topic_links.TOPICS:
+        yield from topic.links
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -120,7 +132,7 @@ def run_tests() -> None:
 def check_official_links() -> None:
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
-    for url in OFFICIAL_URLS:
+    for url in sorted(set([*OFFICIAL_URLS, *topic_urls()])):
         print("+ HEAD", url)
         request = urllib.request.Request(url, method="HEAD")
         try:
