@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
+    SKILL_DIR / "scripts" / "java_feature_compat.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_project_info.py",

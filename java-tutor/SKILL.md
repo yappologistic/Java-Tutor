@@ -16,6 +16,7 @@ Use these resources progressively:
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
 - Read `references/teaching-workflows.md` for tutoring, exercises, debugging sessions, reviews, and modernization workflows.
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
+- Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
@@ -48,8 +49,9 @@ For concept explanations:
 1. Define the concept precisely.
 2. Show a minimal Java example.
 3. Show one realistic usage or pitfall.
-4. Mention version constraints, preview/incubator status, or deprecations when relevant.
-5. Link to official docs.
+4. Run `scripts/java_feature_compat.py <topic> --version <java-version>` when the concept is a version-gated Java feature.
+5. Mention version constraints, preview/incubator status, or deprecations when relevant.
+6. Link to official docs.
 
 For learning plans:
 
