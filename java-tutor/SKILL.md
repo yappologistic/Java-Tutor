@@ -18,6 +18,7 @@ Use these resources progressively:
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
+- Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
@@ -49,6 +50,14 @@ For concept explanations:
 3. Show one realistic usage or pitfall.
 4. Mention version constraints, preview/incubator status, or deprecations when relevant.
 5. Link to official docs.
+
+For learning plans:
+
+1. Identify the user's level and goal.
+2. Run `scripts/java_learning_path.py <level> [--goal topic]` for a baseline path.
+3. Adapt the path to the user's project, time budget, and Java version.
+4. Keep exercises small enough to compile and run locally.
+5. Link each milestone to official learning or reference docs.
 
 For code review:
 

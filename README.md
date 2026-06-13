@@ -7,6 +7,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 ## What It Does
 
 - Explains Java concepts interactively at the user's level.
+- Builds official-doc-backed learning paths with `java-tutor/scripts/java_learning_path.py`.
 - Fixes Java compile errors, runtime exceptions, test failures, and build issues.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.

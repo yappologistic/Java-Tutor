@@ -8,6 +8,7 @@ import html
 import os
 import re
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -28,6 +29,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
+    SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
@@ -56,6 +58,11 @@ OFFICIAL_URLS = [
     "https://openjdk.org/jeps/0",
     "https://dev.java/learn/",
     "https://docs.oracle.com/javase/tutorial/",
+    "https://dev.java/learn/getting-started/",
+    "https://dev.java/learn/language-basics/",
+    "https://dev.java/learn/classes-objects/",
+    "https://dev.java/learn/api/collections-framework/",
+    "https://dev.java/learn/api/streams/",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -117,6 +124,16 @@ def compile_error_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_compile_error_triage.official_urls(java_compile_error_triage.diagnostics())
+
+
+def learning_path_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_learning_path
+    finally:
+        sys.path.pop(0)
+    for path in java_learning_path.paths():
+        yield from java_learning_path.official_urls(path)
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -265,21 +282,35 @@ def run_tests() -> None:
 def check_official_links() -> None:
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
-    for url in sorted(set([*OFFICIAL_URLS, *topic_urls(), *exception_urls(), *review_urls(), *compile_error_urls()])):
+    for url in sorted(
+        set([*OFFICIAL_URLS, *topic_urls(), *exception_urls(), *review_urls(), *compile_error_urls(), *learning_path_urls()])
+    ):
         print("+ HEAD", url)
-        request = urllib.request.Request(url, method="HEAD")
+        status = checked_url_status(opener, url)
+        if status >= 400:
+            raise AssertionError(f"{url} returned HTTP {status}")
+
+
+def checked_url_status(opener: urllib.request.OpenerDirector, url: str) -> int:
+    last_error: BaseException | None = None
+    for attempt in range(1, 4):
         try:
-            with opener.open(request, timeout=20) as response:
-                status = response.status
+            request = urllib.request.Request(url, method="HEAD")
+            with opener.open(request, timeout=30) as response:
+                return response.status
         except urllib.error.HTTPError as exc:
             if exc.code in {403, 405}:
                 request = urllib.request.Request(url, method="GET")
-                with opener.open(request, timeout=20) as response:
-                    status = response.status
-            else:
-                raise
-        if status >= 400:
-            raise AssertionError(f"{url} returned HTTP {status}")
+                with opener.open(request, timeout=30) as response:
+                    return response.status
+            raise
+        except (TimeoutError, socket.timeout, urllib.error.URLError) as exc:
+            last_error = exc
+            if attempt == 3:
+                break
+            print(f"  retry {attempt}/2 after transient fetch failure: {exc}")
+    assert last_error is not None
+    raise last_error
 
 
 def check_release_facts() -> None:

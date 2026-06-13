@@ -1,6 +1,27 @@
 import unittest
 
-from verify_project_script import OFFICIAL_URLS, RELEASE_FACT_CHECKS, normalize_text, parse_frontmatter
+from verify_project_script import OFFICIAL_URLS, RELEASE_FACT_CHECKS, checked_url_status, normalize_text, parse_frontmatter
+
+
+class FakeResponse:
+    status = 200
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        return False
+
+
+class FlakyOpener:
+    def __init__(self):
+        self.calls = 0
+
+    def open(self, request, timeout):
+        self.calls += 1
+        if self.calls == 1:
+            raise TimeoutError("temporary timeout")
+        return FakeResponse()
 
 
 class VerifyProjectTests(unittest.TestCase):
@@ -30,6 +51,11 @@ class VerifyProjectTests(unittest.TestCase):
         for check in RELEASE_FACT_CHECKS:
             self.assertTrue(check["url"].startswith(allowed_hosts), check["url"])
             self.assertTrue(check["required"], check["name"])
+
+    def test_checked_url_status_retries_transient_timeout(self):
+        opener = FlakyOpener()
+        self.assertEqual(checked_url_status(opener, "https://docs.oracle.com/example"), 200)
+        self.assertEqual(opener.calls, 2)
 
 
 if __name__ == "__main__":

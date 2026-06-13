@@ -18,6 +18,8 @@ For intermediate learners, include API design, collections, exceptions, streams,
 
 For senior developers, focus on tradeoffs: binary/source compatibility, observability, concurrency, memory, API stability, migration cost, and operational behavior.
 
+For multi-session learning plans, run `scripts/java_learning_path.py <level> [--goal topic]` first, then tailor the generated milestones to the learner's time budget, Java version, and project context.
+
 ## Debugging
 
 Classify the problem:
@@ -101,6 +103,8 @@ python java-tutor/scripts/java_doc_link.py release-notes --version 26
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
 python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
+python java-tutor/scripts/java_learning_path.py beginner
+python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_project_info.py . --pretty
 python java-tutor/scripts/java_topic_links.py virtual-threads
