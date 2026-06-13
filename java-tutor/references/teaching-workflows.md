@@ -38,6 +38,8 @@ Ask for or inspect:
 
 When editing a repository, run a targeted compile/test command after the fix.
 
+Use `scripts/java_project_info.py <project-root> --pretty` to collect version hints before making version-specific claims or recommending APIs.
+
 ## Modernization and Migration
 
 First identify the current and target versions. Then check official release notes and JEPs for incompatible changes and new features.
@@ -86,4 +88,5 @@ python java-tutor/scripts/java_doc_link.py api 'java.lang.String#toUpperCase()' 
 python java-tutor/scripts/java_doc_link.py jls 15 --version 25
 python java-tutor/scripts/java_doc_link.py jep 444
 python java-tutor/scripts/java_doc_link.py release-notes --version 26
+python java-tutor/scripts/java_project_info.py . --pretty
 ```

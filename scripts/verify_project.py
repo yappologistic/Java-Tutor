@@ -21,6 +21,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "source-map.md",
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
+    SKILL_DIR / "scripts" / "java_project_info.py",
     ROOT / "README.md",
     ROOT / "INSTALL.md",
     ROOT / "install.ps1",

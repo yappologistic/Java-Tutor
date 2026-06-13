@@ -16,6 +16,7 @@ Use these resources progressively:
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
 - Read `references/teaching-workflows.md` for tutoring, exercises, debugging sessions, reviews, and modernization workflows.
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
+- Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 
 ## Answer Shape
 
@@ -66,10 +67,11 @@ When answering from external sources, keep quotes short and paraphrase. Prefer l
 When the user is working in a Java repository:
 
 1. Inspect build files before editing: Maven (`pom.xml`), Gradle (`build.gradle`, `build.gradle.kts`, `settings.gradle`), Java version files, CI, and test layout.
-2. Use the project's existing package structure, style, test framework, formatter, and dependency management.
-3. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
-4. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
-5. Explain any unverified assumptions in the final answer.
+2. Run `scripts/java_project_info.py <project-root>` when version detection is not obvious from the request.
+3. Use the project's existing package structure, style, test framework, formatter, and dependency management.
+4. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
+5. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
+6. Explain any unverified assumptions in the final answer.
 
 ## Documentation Footer
 
