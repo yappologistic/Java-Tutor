@@ -140,4 +140,4 @@ Run:
 python .\scripts\verify_project.py
 ```
 
-Run with `--check-links` to verify the official Java documentation URLs are reachable.
+This checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall behavior in a temporary Codex home, and the Python tests. Run with `--check-links` to verify the official Java documentation URLs are reachable.

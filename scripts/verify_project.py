@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -59,6 +61,11 @@ def topic_urls() -> Iterable[str]:
 def run(command: list[str], *, timeout: int = 30) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=ROOT, timeout=timeout, check=True)
+
+
+def run_with_env(command: list[str], env: dict[str, str], *, timeout: int = 30) -> None:
+    print("+", " ".join(command))
+    subprocess.run(command, cwd=ROOT, env=env, timeout=timeout, check=True)
 
 
 def check_required_files() -> None:
@@ -125,6 +132,50 @@ def check_shell_syntax() -> None:
         print("Skipping install.sh syntax check: sh is not available")
 
 
+def check_installers() -> None:
+    with tempfile.TemporaryDirectory(prefix="java-tutor-verify-") as temp_dir:
+        temp_home = Path(temp_dir) / "codex-home"
+        skill_file = temp_home / "skills" / "java-tutor" / "SKILL.md"
+        env = os.environ.copy()
+        env["CODEX_HOME"] = str(temp_home)
+
+        if os.name == "nt":
+            powershell = shutil.which("powershell") or shutil.which("pwsh")
+            if not powershell:
+                print("Skipping install.ps1 smoke test: PowerShell is not available")
+                return
+            run_with_env([powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1"], env)
+            if not skill_file.is_file():
+                raise AssertionError("install.ps1 did not install SKILL.md")
+            run_with_env(
+                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Update"],
+                env,
+            )
+            if not skill_file.is_file():
+                raise AssertionError("install.ps1 update removed SKILL.md")
+            run_with_env(
+                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Uninstall"],
+                env,
+            )
+            if skill_file.exists():
+                raise AssertionError("install.ps1 uninstall left SKILL.md behind")
+            return
+
+        shell = shutil.which("bash") or shutil.which("sh")
+        if not shell:
+            print("Skipping install.sh smoke test: sh/bash is not available")
+            return
+        run_with_env([shell, "./install.sh"], env)
+        if not skill_file.is_file():
+            raise AssertionError("install.sh did not install SKILL.md")
+        run_with_env([shell, "./install.sh", "update"], env)
+        if not skill_file.is_file():
+            raise AssertionError("install.sh update removed SKILL.md")
+        run_with_env([shell, "./install.sh", "uninstall"], env)
+        if skill_file.exists():
+            raise AssertionError("install.sh uninstall left SKILL.md behind")
+
+
 def run_tests() -> None:
     run([sys.executable, "-m", "unittest", "discover", "-s", "tests"])
 
@@ -158,6 +209,7 @@ def main(argv: list[str]) -> int:
     check_skill_metadata()
     check_docs()
     check_shell_syntax()
+    check_installers()
     run_tests()
     if args.check_links:
         check_official_links()

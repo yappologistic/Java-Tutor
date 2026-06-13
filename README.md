@@ -131,6 +131,8 @@ Run the project verifier:
 python .\scripts\verify_project.py
 ```
 
+The verifier checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall behavior in a temporary Codex home, and the Python tests.
+
 Optionally check official Java source URLs:
 
 ```powershell
