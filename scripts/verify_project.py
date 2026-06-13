@@ -33,6 +33,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
     SKILL_DIR / "scripts" / "java_jdk_tool.py",
+    SKILL_DIR / "scripts" / "java_jvm_option.py",
     SKILL_DIR / "scripts" / "java_language_rule.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
@@ -99,7 +100,9 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html",
+    "https://openjdk.org/jeps/12",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -188,6 +191,15 @@ def jdk_tool_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_jdk_tool.official_urls(java_jdk_tool.tools())
+
+
+def jvm_option_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_jvm_option
+    finally:
+        sys.path.pop(0)
+    yield from java_jvm_option.official_urls(java_jvm_option.areas())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -392,6 +404,7 @@ def check_official_links() -> None:
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
                 *jdk_tool_urls(),
+                *jvm_option_urls(),
                 *language_rule_urls(),
                 *learning_path_urls(),
                 *version_consistency_urls(),
