@@ -46,6 +46,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_regex_triage.py",
+    SKILL_DIR / "scripts" / "java_reflection_triage.py",
     SKILL_DIR / "scripts" / "java_security_triage.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
@@ -184,6 +185,26 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/PatternSyntaxException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Member.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Method.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Constructor.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Field.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AccessibleObject.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/InvocationTargetException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Modifier.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/ParameterizedType.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AnnotatedElement.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Proxy.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/InvocationHandler.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/RecordComponent.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Retention.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/RetentionPolicy.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Target.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandles.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandle.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
@@ -355,6 +376,15 @@ def regex_triage_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_regex_triage.official_urls(java_regex_triage.issues())
+
+
+def reflection_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_reflection_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_reflection_triage.official_urls(java_reflection_triage.issues())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -570,6 +600,7 @@ def check_official_links() -> None:
                 *module_triage_urls(),
                 *numeric_triage_urls(),
                 *regex_triage_urls(),
+                *reflection_triage_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
                 *deprecation_audit_urls(),

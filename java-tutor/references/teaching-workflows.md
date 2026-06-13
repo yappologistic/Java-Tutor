@@ -70,6 +70,8 @@ Use `scripts/java_numeric_triage.py <issue-or-alias>` for floating-point precisi
 
 Use `scripts/java_regex_triage.py <issue-or-alias>` for Java string escaping versus regex escaping, matches versus find, capture groups, flags/Unicode behavior, replacement quoting, backtracking performance, and split/tokenization bugs.
 
+Use `scripts/java_reflection_triage.py <issue-or-alias>` for reflection, annotations and retention, JPMS reflective access, generic type metadata, dynamic proxies, MethodHandle lookup, and record reflection.
+
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
 
 For performance incidents, run `scripts/java_performance_triage.py <symptom>` before recommending code, JVM flag, GC, or architecture changes. Prioritize collecting JFR, thread dumps, GC evidence, heap evidence, JVM flags, and workload timing.
@@ -158,6 +160,8 @@ python java-tutor/scripts/java_numeric_triage.py bigdecimal
 python java-tutor/scripts/java_numeric_triage.py overflow --json
 python java-tutor/scripts/java_regex_triage.py 'string matches'
 python java-tutor/scripts/java_regex_triage.py backtracking --json
+python java-tutor/scripts/java_reflection_triage.py retention
+python java-tutor/scripts/java_reflection_triage.py methodhandle --json
 python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25

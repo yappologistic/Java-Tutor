@@ -34,6 +34,7 @@ Use these resources progressively:
 - Use `scripts/java_numeric_triage.py <issue-or-alias>` for floating-point precision, BigDecimal scale/rounding, integer overflow, division, numeric parsing/formatting, and numeric equality issues.
 - Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
 - Use `scripts/java_regex_triage.py <issue-or-alias>` for Java regex escaping, matches versus find, groups, flags/Unicode, replacement quoting, backtracking performance, and split/tokenization issues.
+- Use `scripts/java_reflection_triage.py <issue-or-alias>` for reflection, annotations, JPMS reflective access, generic type metadata, dynamic proxies, MethodHandle lookup, and record reflection issues.
 - Use `scripts/java_security_triage.py <risk>` for Java security risks such as deserialization, XML parsing, path traversal, secrets/logging, crypto/TLS, or resource exhaustion.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_version_consistency.py <project-root>` when version hints conflict or when source/target/runtime alignment affects the answer.
@@ -86,8 +87,9 @@ For code review:
 5. Run `scripts/java_numeric_triage.py <issue-or-alias>` when reviewing money, rounding, precision, overflow, parsing, or numeric equality code.
 6. Run `scripts/java_regex_triage.py <issue-or-alias>` when reviewing Pattern/Matcher use, regex replacement, string splitting, or regex performance.
 7. Run `scripts/java_jdbc_triage.py <issue-or-alias>` when reviewing JDBC resource ownership, SQL parameterization, transactions, ResultSet handling, or SQL exception handling.
-8. Cite exact files/lines when working locally.
-9. Recommend modern Java APIs only when they fit the configured source/target version.
+8. Run `scripts/java_reflection_triage.py <issue-or-alias>` when reviewing reflective access, annotations, proxies, generic metadata, method handles, or record reflection.
+9. Cite exact files/lines when working locally.
+10. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 
