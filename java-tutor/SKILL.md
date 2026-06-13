@@ -16,6 +16,7 @@ Use these resources progressively:
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
 - Read `references/teaching-workflows.md` for tutoring, exercises, debugging sessions, reviews, and modernization workflows.
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
+- Use `scripts/java_deprecation_audit.py --target <java-version> --artifact <jar-or-classes>` before migration work involving deprecated, for-removal, removed, or internal APIs.
 - Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
@@ -82,8 +83,9 @@ For migration planning:
 
 1. Identify current and target Java versions.
 2. Run `scripts/java_migration_plan.py <source-version> <target-version>`.
-3. Supplement the generated checklist with project-specific framework, dependency, build, runtime, and CI constraints.
-4. Verify the target release notes and migration guide before making claims about removed APIs, deprecated APIs, or behavioral changes.
+3. Run `scripts/java_deprecation_audit.py --target <target-version> --artifact <jar-or-classes>` when compiled artifacts are available.
+4. Supplement the generated checklist with project-specific framework, dependency, build, runtime, and CI constraints.
+5. Verify the target release notes and migration guide before making claims about removed APIs, deprecated APIs, or behavioral changes.
 
 ## Source Discipline
 

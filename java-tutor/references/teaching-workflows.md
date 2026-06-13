@@ -60,6 +60,8 @@ First identify the current and target versions. Then check official release note
 
 Run `scripts/java_migration_plan.py <source-version> <target-version>` to produce a baseline checklist and official migration links.
 
+Run `scripts/java_deprecation_audit.py --target <target-version> --artifact <jar-or-classes>` after compiling when the migration might involve deprecated APIs, APIs marked for removal, removed APIs, removed tools, or JDK internal APIs.
+
 Prioritize low-risk changes:
 
 - Replace obsolete APIs with supported equivalents.
@@ -106,6 +108,7 @@ python java-tutor/scripts/java_doc_link.py api 'java.lang.String#toUpperCase()' 
 python java-tutor/scripts/java_doc_link.py jls 15 --version 25
 python java-tutor/scripts/java_doc_link.py jep 444
 python java-tutor/scripts/java_doc_link.py release-notes --version 26
+python java-tutor/scripts/java_deprecation_audit.py --target 25 --artifact target/app.jar
 python java-tutor/scripts/java_feature_compat.py records --version 11
 python java-tutor/scripts/java_feature_compat.py virtual-threads --version 21
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'

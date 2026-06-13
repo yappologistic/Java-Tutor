@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
+    SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
@@ -50,6 +51,8 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/26/",
     "https://docs.oracle.com/en/java/javase/25/docs/api/",
     "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jdeprscan.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jdeps.html",
     "https://docs.oracle.com/en/java/javase/25/security/index.html",
     "https://docs.oracle.com/en/java/javase/25/security/java-security-overview1.html",
     "https://docs.oracle.com/en/java/javase/25/migrate/index.html",
@@ -69,6 +72,9 @@ OFFICIAL_URLS = [
     "https://dev.java/learn/jvm/jfr/",
     "https://docs.oracle.com/en/java/javase/25/troubleshoot/diagnostic-tools.html",
     "https://docs.oracle.com/en/java/javase/25/troubleshoot/troubleshoot-performance-issues-using-jfr.html",
+    "https://docs.oracle.com/en/java/javase/25/migrate/removed-apis.html",
+    "https://docs.oracle.com/en/java/javase/25/migrate/removed-tools-and-components.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/deprecated-list.html",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -158,6 +164,15 @@ def performance_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_performance_triage.official_urls(java_performance_triage.symptoms())
+
+
+def deprecation_audit_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_deprecation_audit
+    finally:
+        sys.path.pop(0)
+    yield from java_deprecation_audit.official_urls("25")
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -317,6 +332,7 @@ def check_official_links() -> None:
                 *learning_path_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
+                *deprecation_audit_urls(),
             ]
         )
     ):
