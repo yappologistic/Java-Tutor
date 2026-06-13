@@ -82,6 +82,8 @@ Use `scripts/java_reflection_triage.py <issue-or-alias>` for reflection, annotat
 
 Use `scripts/java_process_triage.py <issue-or-alias>` for ProcessBuilder command lists, working directories, environment variables, stdout/stderr pipe deadlocks, exit codes/timeouts, output text decoding, and subprocess security boundaries.
 
+Use `scripts/java_text_triage.py <issue-or-alias>` for String equality/comparison, Unicode code points, locale-sensitive case, formatting, text blocks, StringBuilder, normalization/collation, ResourceBundle localization, and charset boundaries.
+
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
 
 For performance incidents, run `scripts/java_performance_triage.py <symptom>` before recommending code, JVM flag, GC, or architecture changes. Prioritize collecting JFR, thread dumps, GC evidence, heap evidence, JVM flags, and workload timing.
@@ -182,6 +184,8 @@ python java-tutor/scripts/java_reflection_triage.py retention
 python java-tutor/scripts/java_reflection_triage.py methodhandle --json
 python java-tutor/scripts/java_process_triage.py deadlock
 python java-tutor/scripts/java_process_triage.py timeout --json
+python java-tutor/scripts/java_text_triage.py 'turkish i'
+python java-tutor/scripts/java_text_triage.py mojibake --json
 python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25

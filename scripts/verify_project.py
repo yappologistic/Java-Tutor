@@ -53,6 +53,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_regex_triage.py",
     SKILL_DIR / "scripts" / "java_reflection_triage.py",
     SKILL_DIR / "scripts" / "java_security_triage.py",
+    SKILL_DIR / "scripts" / "java_text_triage.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
     SKILL_DIR / "scripts" / "java_version_consistency.py",
@@ -508,6 +509,15 @@ def security_triage_urls() -> Iterable[str]:
     yield from java_security_triage.official_urls(java_security_triage.risks())
 
 
+def text_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_text_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_text_triage.official_urls(java_text_triage.issues())
+
+
 def run(command: list[str], *, timeout: int = 30) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=ROOT, timeout=timeout, check=True)
@@ -685,6 +695,7 @@ def check_official_links() -> None:
                 *process_triage_urls(),
                 *deprecation_audit_urls(),
                 *security_triage_urls(),
+                *text_triage_urls(),
             ]
         )
     ):
