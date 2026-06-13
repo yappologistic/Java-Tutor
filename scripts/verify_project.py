@@ -24,6 +24,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "source-map.md",
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
+    SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
@@ -58,6 +59,16 @@ def topic_urls() -> Iterable[str]:
         sys.path.pop(0)
     for topic in java_topic_links.TOPICS:
         yield from topic.links
+
+
+def exception_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_exception_triage
+    finally:
+        sys.path.pop(0)
+    for item in java_exception_triage.EXCEPTIONS:
+        yield java_exception_triage.api_link(item.api_class, "25")
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -200,7 +211,7 @@ def run_tests() -> None:
 def check_official_links() -> None:
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
-    for url in sorted(set([*OFFICIAL_URLS, *topic_urls()])):
+    for url in sorted(set([*OFFICIAL_URLS, *topic_urls(), *exception_urls()])):
         print("+ HEAD", url)
         request = urllib.request.Request(url, method="HEAD")
         try:

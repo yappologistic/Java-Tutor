@@ -16,6 +16,7 @@ Use these resources progressively:
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
 - Read `references/teaching-workflows.md` for tutoring, exercises, debugging sessions, reviews, and modernization workflows.
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
+- Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
@@ -31,10 +32,11 @@ Match the user's level:
 For bug fixing:
 
 1. Reproduce or reason from the exact error, stack trace, test failure, and Java/JDK version.
-2. Identify whether the issue is language syntax, type system, API usage, runtime behavior, build configuration, dependency conflict, JVM option, or environment.
-3. Provide the smallest safe fix first.
-4. Explain why the fix works using the relevant specification or API source.
-5. Add a regression test or compile/run command when working in a repository.
+2. Run `scripts/java_exception_triage.py "<exception-or-stack-trace>"` when the failure is a supported common exception.
+3. Identify whether the issue is language syntax, type system, API usage, runtime behavior, build configuration, dependency conflict, JVM option, or environment.
+4. Provide the smallest safe fix first.
+5. Explain why the fix works using the relevant specification or API source.
+6. Add a regression test or compile/run command when working in a repository.
 
 For concept explanations:
 
