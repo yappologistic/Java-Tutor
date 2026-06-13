@@ -20,6 +20,7 @@ Use these resources progressively:
 - Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
 - Use `scripts/java_jdk_tool.py <tool-or-task>` for official JDK tool manuals and first checks for `java`, `javac`, `jar`, `javadoc`, `jshell`, `jdeps`, `jdeprscan`, `jlink`, `jpackage`, `jcmd`, and `jfr`.
 - Use `scripts/java_jvm_option.py <option-area-or-alias>` before recommending JVM launcher flags for heap sizing, GC selection/logging, preview features, module access, assertions/properties, diagnostics, or virtual-thread diagnostics.
+- Use `scripts/java_collections_triage.py <issue-or-alias>` for collection choice, equality/hashCode, ordering, concurrent modification, Map updates, Optional usage, and stream pipeline issues.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
@@ -75,8 +76,9 @@ For code review:
 
 1. Prioritize correctness, security, concurrency, resource management, and compatibility issues.
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
-3. Cite exact files/lines when working locally.
-4. Recommend modern Java APIs only when they fit the configured source/target version.
+3. Run `scripts/java_collections_triage.py <issue-or-alias>` when reviewing collection choice, equality/hashCode, ordering, iteration/mutation, Map updates, Optional usage, or stream pipelines.
+4. Cite exact files/lines when working locally.
+5. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 

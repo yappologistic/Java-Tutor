@@ -27,6 +27,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
+    SKILL_DIR / "scripts" / "java_collections_triage.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
     SKILL_DIR / "scripts" / "java_concurrency_triage.py",
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
@@ -81,6 +82,14 @@ OFFICIAL_URLS = [
     "https://dev.java/learn/classes-objects/",
     "https://dev.java/learn/api/collections-framework/",
     "https://dev.java/learn/api/streams/",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Comparable.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collection.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Comparator.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Iterator.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Set.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/Collectors.html",
     "https://dev.java/learn/jvm/jfr/",
     "https://docs.oracle.com/en/java/javase/25/troubleshoot/diagnostic-tools.html",
     "https://docs.oracle.com/en/java/javase/25/troubleshoot/troubleshoot-performance-issues-using-jfr.html",
@@ -108,6 +117,8 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.1",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.2",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-7.html#jls-7.7.3",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.10.3",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.21.1",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html",
     "https://openjdk.org/jeps/12",
 ]
@@ -171,6 +182,15 @@ def compile_error_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_compile_error_triage.official_urls(java_compile_error_triage.diagnostics())
+
+
+def collections_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_collections_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_collections_triage.official_urls(java_collections_triage.issues())
 
 
 def concurrency_triage_urls() -> Iterable[str]:
@@ -417,6 +437,7 @@ def check_official_links() -> None:
                 *topic_urls(),
                 *exception_urls(),
                 *review_urls(),
+                *collections_triage_urls(),
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
                 *jdk_tool_urls(),

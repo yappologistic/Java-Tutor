@@ -54,6 +54,8 @@ Use `scripts/java_language_rule.py <rule-or-alias>` before explaining or fixing 
 
 Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compiler errors such as missing symbols, bad imports/classpaths, incompatible types, overload failures, definite assignment, public type/file name mismatches, and source/release mismatches.
 
+Use `scripts/java_collections_triage.py <issue-or-alias>` for collection choice, equality/hashCode, ordering, concurrent modification, Map update, Optional, and stream pipeline bugs or reviews.
+
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
 
 Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual-thread suitability, concurrent collections, or atomicity. Collect evidence before changing synchronization or threading design.
@@ -131,6 +133,8 @@ python java-tutor/scripts/java_language_rule.py overload
 python java-tutor/scripts/java_language_rule.py 'effectively final' --json
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
 python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
+python java-tutor/scripts/java_collections_triage.py hashcode
+python java-tutor/scripts/java_collections_triage.py 'parallel stream' --json
 python java-tutor/scripts/java_concurrency_triage.py data-race
 python java-tutor/scripts/java_concurrency_triage.py 'thread pool' --json
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'

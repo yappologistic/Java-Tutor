@@ -13,6 +13,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Routes JDK tool questions to official manuals with `java-tutor/scripts/java_jdk_tool.py`.
 - Triage JVM launcher flags with `java-tutor/scripts/java_jvm_option.py`.
 - Routes language-rule questions to exact JLS sections with `java-tutor/scripts/java_language_rule.py`.
+- Triage collections, Optional, and stream issues with `java-tutor/scripts/java_collections_triage.py`.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
 - Triage Java concurrency symptoms with `java-tutor/scripts/java_concurrency_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
