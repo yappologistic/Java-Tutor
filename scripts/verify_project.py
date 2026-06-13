@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
+    SKILL_DIR / "scripts" / "java_http_triage.py",
     SKILL_DIR / "scripts" / "java_io_triage.py",
     SKILL_DIR / "scripts" / "java_jdbc_triage.py",
     SKILL_DIR / "scripts" / "java_jdk_tool.py",
@@ -121,6 +122,8 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/ServerSocket.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/Authenticator.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/ProxySelector.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Connection.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/javax/sql/DataSource.html",
@@ -214,6 +217,16 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/TimeUnit.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/SecurityManager.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/net/ssl/SSLContext.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/net/ssl/SSLParameters.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpClient.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpRequest.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpRequest.BodyPublishers.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpResponse.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpResponse.BodyHandlers.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpResponse.BodySubscribers.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/WebSocket.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpTimeoutException.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ClassLoader.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ModuleLayer.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/module/ModuleFinder.html",
@@ -274,6 +287,15 @@ def exception_urls() -> Iterable[str]:
         sys.path.pop(0)
     for item in java_exception_triage.EXCEPTIONS:
         yield java_exception_triage.api_link(item.api_class, "25")
+
+
+def http_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_http_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_http_triage.official_urls(java_http_triage.issues())
 
 
 def review_urls() -> Iterable[str]:
@@ -625,6 +647,7 @@ def check_official_links() -> None:
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
                 *datetime_triage_urls(),
+                *http_triage_urls(),
                 *io_triage_urls(),
                 *jdbc_triage_urls(),
                 *jdk_tool_urls(),
