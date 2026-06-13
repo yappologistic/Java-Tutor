@@ -54,6 +54,8 @@ Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to ch
 
 For performance incidents, run `scripts/java_performance_triage.py <symptom>` before recommending code, JVM flag, GC, or architecture changes. Prioritize collecting JFR, thread dumps, GC evidence, heap evidence, JVM flags, and workload timing.
 
+For Java security questions, run `scripts/java_security_triage.py <risk>` before recommending mitigations. Focus on trust boundaries, untrusted input, resource limits, disclosure paths, and runtime/JDK security configuration.
+
 ## Modernization and Migration
 
 First identify the current and target versions. Then check official release notes and JEPs for incompatible changes and new features.
@@ -119,6 +121,8 @@ python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_performance_triage.py gc
 python java-tutor/scripts/java_performance_triage.py memory-leak --json
+python java-tutor/scripts/java_security_triage.py deserialization
+python java-tutor/scripts/java_security_triage.py xxe --json
 python java-tutor/scripts/java_project_info.py . --pretty
 python java-tutor/scripts/java_version_consistency.py . --json
 python java-tutor/scripts/java_topic_links.py virtual-threads

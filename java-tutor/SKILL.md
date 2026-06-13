@@ -23,6 +23,7 @@ Use these resources progressively:
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
+- Use `scripts/java_security_triage.py <risk>` for Java security risks such as deserialization, XML parsing, path traversal, secrets/logging, crypto/TLS, or resource exhaustion.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_version_consistency.py <project-root>` when version hints conflict or when source/target/runtime alignment affects the answer.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
@@ -70,6 +71,14 @@ For code review:
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
 3. Cite exact files/lines when working locally.
 4. Recommend modern Java APIs only when they fit the configured source/target version.
+
+For security work:
+
+1. Identify trust boundaries, data sensitivity, attacker-controlled inputs, and deployment assumptions.
+2. Run `scripts/java_security_triage.py <risk>` for the relevant risk area before proposing mitigations.
+3. Prefer simple designs that remove attack surface over clever validation.
+4. Treat logs, heap dumps, thread dumps, JFR recordings, and serialized data as potentially sensitive.
+5. Link to official Java security and secure-coding documentation.
 
 For performance work:
 

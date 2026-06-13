@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
+    SKILL_DIR / "scripts" / "java_security_triage.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
     SKILL_DIR / "scripts" / "java_version_consistency.py",
@@ -75,6 +76,10 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/migrate/removed-apis.html",
     "https://docs.oracle.com/en/java/javase/25/migrate/removed-tools-and-components.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/deprecated-list.html",
+    "https://docs.oracle.com/en/java/javase/25/core/serialization-filtering1.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.xml/javax/xml/XMLConstants.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/SecureRandom.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -173,6 +178,15 @@ def deprecation_audit_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_deprecation_audit.official_urls("25")
+
+
+def security_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_security_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_security_triage.official_urls(java_security_triage.risks())
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -333,6 +347,7 @@ def check_official_links() -> None:
                 *version_consistency_urls(),
                 *performance_urls(),
                 *deprecation_audit_urls(),
+                *security_triage_urls(),
             ]
         )
     ):

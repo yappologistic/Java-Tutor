@@ -14,6 +14,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
 - Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Triage Java performance symptoms with `java-tutor/scripts/java_performance_triage.py`.
+- Triage Java security risk areas with `java-tutor/scripts/java_security_triage.py`.
 - Helps migrate and modernize Java projects while respecting the configured source/target version.
 - Plans deprecated, for-removal, removed, and internal API audits with `java-tutor/scripts/java_deprecation_audit.py`.
 - Checks conflicting Java source, target, toolchain, and runtime hints with `java-tutor/scripts/java_version_consistency.py`.
