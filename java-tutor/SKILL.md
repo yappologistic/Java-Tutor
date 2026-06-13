@@ -23,6 +23,7 @@ Use these resources progressively:
 - Use `scripts/java_collections_triage.py <issue-or-alias>` for collection choice, equality/hashCode, ordering, concurrent modification, Map updates, Optional usage, and stream pipeline issues.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
+- Use `scripts/java_datetime_triage.py <issue-or-alias>` for Instant versus LocalDateTime, time zones/DST, formatting/parsing, Duration versus Period, legacy Date/Calendar interop, Clock testing, and offset versus zone issues.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, socket I/O, and URI/URL issues.
 - Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
@@ -78,8 +79,9 @@ For code review:
 1. Prioritize correctness, security, concurrency, resource management, and compatibility issues.
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
 3. Run `scripts/java_collections_triage.py <issue-or-alias>` when reviewing collection choice, equality/hashCode, ordering, iteration/mutation, Map updates, Optional usage, or stream pipelines.
-4. Cite exact files/lines when working locally.
-5. Recommend modern Java APIs only when they fit the configured source/target version.
+4. Run `scripts/java_datetime_triage.py <issue-or-alias>` when reviewing date/time persistence, formatting, time-zone, DST, scheduling, or legacy Date/Calendar code.
+5. Cite exact files/lines when working locally.
+6. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 

@@ -62,6 +62,8 @@ Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I
 
 Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual-thread suitability, concurrent collections, or atomicity. Collect evidence before changing synchronization or threading design.
 
+Use `scripts/java_datetime_triage.py <issue-or-alias>` for Instant versus LocalDateTime, time zones/DST, formatting/parsing, Duration versus Period, legacy Date/Calendar interop, Clock testing, and offset versus zone bugs.
+
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
 
 For performance incidents, run `scripts/java_performance_triage.py <symptom>` before recommending code, JVM flag, GC, or architecture changes. Prioritize collecting JFR, thread dumps, GC evidence, heap evidence, JVM flags, and workload timing.
@@ -139,6 +141,8 @@ python java-tutor/scripts/java_collections_triage.py hashcode
 python java-tutor/scripts/java_collections_triage.py 'parallel stream' --json
 python java-tutor/scripts/java_concurrency_triage.py data-race
 python java-tutor/scripts/java_concurrency_triage.py 'thread pool' --json
+python java-tutor/scripts/java_datetime_triage.py dst
+python java-tutor/scripts/java_datetime_triage.py simpledateformat --json
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
 python java-tutor/scripts/java_io_triage.py utf-8
 python java-tutor/scripts/java_io_triage.py 'socket timeout' --json

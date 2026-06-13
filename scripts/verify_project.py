@@ -30,6 +30,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_collections_triage.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
     SKILL_DIR / "scripts" / "java_concurrency_triage.py",
+    SKILL_DIR / "scripts" / "java_datetime_triage.py",
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
@@ -124,6 +125,24 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/package-summary.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Instant.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/LocalDateTime.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/ZonedDateTime.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/ZoneId.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/zone/ZoneRules.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/format/DateTimeFormatter.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/format/DateTimeParseException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Duration.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Period.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/temporal/ChronoUnit.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Date.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Calendar.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/TimeZone.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/SimpleDateFormat.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/OffsetDateTime.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/ZoneOffset.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
@@ -214,6 +233,15 @@ def concurrency_triage_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_concurrency_triage.official_urls(java_concurrency_triage.concerns())
+
+
+def datetime_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_datetime_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_datetime_triage.official_urls(java_datetime_triage.issues())
 
 
 def language_rule_urls() -> Iterable[str]:
@@ -463,6 +491,7 @@ def check_official_links() -> None:
                 *collections_triage_urls(),
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
+                *datetime_triage_urls(),
                 *io_triage_urls(),
                 *jdk_tool_urls(),
                 *jvm_option_urls(),
