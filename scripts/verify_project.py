@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
+    SKILL_DIR / "scripts" / "java_version_consistency.py",
     ROOT / "README.md",
     ROOT / "INSTALL.md",
     ROOT / "install.ps1",
@@ -135,6 +136,15 @@ def learning_path_urls() -> Iterable[str]:
         sys.path.pop(0)
     for path in java_learning_path.paths():
         yield from java_learning_path.official_urls(path)
+
+
+def version_consistency_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_version_consistency
+    finally:
+        sys.path.pop(0)
+    yield from java_version_consistency.official_urls()
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -284,7 +294,17 @@ def check_official_links() -> None:
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
     for url in sorted(
-        set([*OFFICIAL_URLS, *topic_urls(), *exception_urls(), *review_urls(), *compile_error_urls(), *learning_path_urls()])
+        set(
+            [
+                *OFFICIAL_URLS,
+                *topic_urls(),
+                *exception_urls(),
+                *review_urls(),
+                *compile_error_urls(),
+                *learning_path_urls(),
+                *version_consistency_urls(),
+            ]
+        )
     ):
         print("+ HEAD", url)
         status = checked_url_status(opener, url)

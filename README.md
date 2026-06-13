@@ -14,6 +14,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
 - Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Helps migrate and modernize Java projects while respecting the configured source/target version.
+- Checks conflicting Java source, target, toolchain, and runtime hints with `java-tutor/scripts/java_version_consistency.py`.
 - Ends substantial answers with direct official documentation links.
 
 ## Install

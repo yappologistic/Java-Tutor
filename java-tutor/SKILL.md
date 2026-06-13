@@ -22,6 +22,7 @@ Use these resources progressively:
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
+- Use `scripts/java_version_consistency.py <project-root>` when version hints conflict or when source/target/runtime alignment affects the answer.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
 - Use `scripts/java_verify_commands.py <project-root> [--changed-file path]` to choose narrow and broad compile/test commands before verifying a local Java fix.
 - Use `scripts/java_code_review_checklist.py [focus...]` before substantial Java reviews to generate official-doc-backed checks for correctness, resources, concurrency, security, and compatibility.
@@ -95,11 +96,12 @@ When the user is working in a Java repository:
 
 1. Inspect build files before editing: Maven (`pom.xml`), Gradle (`build.gradle`, `build.gradle.kts`, `settings.gradle`), Java version files, CI, and test layout.
 2. Run `scripts/java_project_info.py <project-root>` when version detection is not obvious from the request.
-3. Use the project's existing package structure, style, test framework, formatter, and dependency management.
-4. Run `scripts/java_verify_commands.py <project-root> [--changed-file path]` to identify verification commands.
-5. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
-6. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
-7. Explain any unverified assumptions in the final answer.
+3. Run `scripts/java_version_consistency.py <project-root>` when multiple version hints appear or source/target/runtime alignment matters.
+4. Use the project's existing package structure, style, test framework, formatter, and dependency management.
+5. Run `scripts/java_verify_commands.py <project-root> [--changed-file path]` to identify verification commands.
+6. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
+7. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
+8. Explain any unverified assumptions in the final answer.
 
 ## Documentation Footer
 

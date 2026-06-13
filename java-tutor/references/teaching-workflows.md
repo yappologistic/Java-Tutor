@@ -42,6 +42,8 @@ When editing a repository, run a targeted compile/test command after the fix.
 
 Use `scripts/java_project_info.py <project-root> --pretty` to collect version hints before making version-specific claims or recommending APIs.
 
+Use `scripts/java_version_consistency.py <project-root>` when Maven, Gradle, `.java-version`, `.sdkmanrc`, Docker, CI, or local toolchain clues point to different Java versions.
+
 Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending modern Java features to projects with a declared source, target, release, or runtime baseline.
 
 Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compiler errors such as missing symbols, bad imports/classpaths, incompatible types, overload failures, definite assignment, public type/file name mismatches, and source/release mismatches.
@@ -111,6 +113,7 @@ python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_project_info.py . --pretty
+python java-tutor/scripts/java_version_consistency.py . --json
 python java-tutor/scripts/java_topic_links.py virtual-threads
 python java-tutor/scripts/java_topic_links.py --list
 python java-tutor/scripts/java_verify_commands.py . --changed-file src/test/java/ExampleTest.java
