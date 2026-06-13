@@ -58,6 +58,8 @@ Use `scripts/java_collections_triage.py <issue-or-alias>` for collection choice,
 
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
 
+Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, sockets, URI/URL, and cross-platform filesystem behavior.
+
 Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual-thread suitability, concurrent collections, or atomicity. Collect evidence before changing synchronization or threading design.
 
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
@@ -138,6 +140,8 @@ python java-tutor/scripts/java_collections_triage.py 'parallel stream' --json
 python java-tutor/scripts/java_concurrency_triage.py data-race
 python java-tutor/scripts/java_concurrency_triage.py 'thread pool' --json
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
+python java-tutor/scripts/java_io_triage.py utf-8
+python java-tutor/scripts/java_io_triage.py 'socket timeout' --json
 python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency
 python java-tutor/scripts/java_migration_plan.py 8 25

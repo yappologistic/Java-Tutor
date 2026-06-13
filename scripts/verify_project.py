@@ -33,6 +33,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
+    SKILL_DIR / "scripts" / "java_io_triage.py",
     SKILL_DIR / "scripts" / "java_jdk_tool.py",
     SKILL_DIR / "scripts" / "java_jvm_option.py",
     SKILL_DIR / "scripts" / "java_language_rule.py",
@@ -100,6 +101,19 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.xml/javax/xml/XMLConstants.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/SecureRandom.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/Charset.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/charset/StandardCharsets.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/InputStream.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/OutputStream.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Reader.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/Writer.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectInputStream.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/Socket.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/ServerSocket.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html",
+    "https://docs.oracle.com/javase/tutorial/essential/io/path.html",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/InterruptedException.html",
@@ -209,6 +223,15 @@ def language_rule_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_language_rule.official_urls(java_language_rule.rules())
+
+
+def io_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_io_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_io_triage.official_urls(java_io_triage.issues())
 
 
 def jdk_tool_urls() -> Iterable[str]:
@@ -440,6 +463,7 @@ def check_official_links() -> None:
                 *collections_triage_urls(),
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
+                *io_triage_urls(),
                 *jdk_tool_urls(),
                 *jvm_option_urls(),
                 *language_rule_urls(),

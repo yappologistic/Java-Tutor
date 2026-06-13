@@ -24,6 +24,7 @@ Use these resources progressively:
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
+- Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, socket I/O, and URI/URL issues.
 - Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
@@ -92,9 +93,10 @@ For security work:
 
 1. Identify trust boundaries, data sensitivity, attacker-controlled inputs, and deployment assumptions.
 2. Run `scripts/java_security_triage.py <risk>` for the relevant risk area before proposing mitigations.
-3. Prefer simple designs that remove attack surface over clever validation.
-4. Treat logs, heap dumps, thread dumps, JFR recordings, and serialized data as potentially sensitive.
-5. Link to official Java security and secure-coding documentation.
+3. Run `scripts/java_io_triage.py <issue-or-alias>` for filesystem boundaries, path traversal, serialization, or socket I/O details.
+4. Prefer simple designs that remove attack surface over clever validation.
+5. Treat logs, heap dumps, thread dumps, JFR recordings, and serialized data as potentially sensitive.
+6. Link to official Java security and secure-coding documentation.
 
 For performance work:
 
