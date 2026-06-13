@@ -21,6 +21,7 @@ Official sources show:
 | Current downloads and LTS label | `https://www.oracle.com/java/technologies/downloads/` |
 | Java SE API for version N | `https://docs.oracle.com/en/java/javase/N/docs/api/` |
 | JDK N guides | `https://docs.oracle.com/en/java/javase/N/` |
+| JDK N migration guide | `https://docs.oracle.com/en/java/javase/N/migrate/index.html` |
 | JDK release notes index | `https://www.oracle.com/java/technologies/javase/jdk-relnotes-index.html` |
 | JDK 26 release notes | `https://www.oracle.com/java/technologies/javase/26all-relnotes.html` |
 | Java language rules | `https://docs.oracle.com/javase/specs/jls/se25/html/index.html` or matching version |
@@ -42,6 +43,8 @@ Use the JVMS for class-file format, bytecode verification, class loading/linking
 Use JEPs for feature history and rationale. JEPs are not a substitute for the final JLS/JVMS/API once a feature is permanent.
 
 Use release notes for removed APIs, deprecated APIs, behavior changes, security/provider changes, tools changes, compatibility notes, and known issues.
+
+Use Oracle JDK Migration Guides for version-to-version upgrade planning, then cross-check release notes for exact removed/deprecated APIs and compatibility changes.
 
 Use dev.java for modern learning paths and Oracle Tutorials for beginner examples. Mention that some tutorials are older when a lesson predates modern language features.
 

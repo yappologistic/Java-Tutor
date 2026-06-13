@@ -44,6 +44,8 @@ Use `scripts/java_project_info.py <project-root> --pretty` to collect version hi
 
 First identify the current and target versions. Then check official release notes and JEPs for incompatible changes and new features.
 
+Run `scripts/java_migration_plan.py <source-version> <target-version>` to produce a baseline checklist and official migration links.
+
 Prioritize low-risk changes:
 
 - Replace obsolete APIs with supported equivalents.
@@ -88,6 +90,7 @@ python java-tutor/scripts/java_doc_link.py api 'java.lang.String#toUpperCase()' 
 python java-tutor/scripts/java_doc_link.py jls 15 --version 25
 python java-tutor/scripts/java_doc_link.py jep 444
 python java-tutor/scripts/java_doc_link.py release-notes --version 26
+python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_project_info.py . --pretty
 python java-tutor/scripts/java_topic_links.py virtual-threads
 python java-tutor/scripts/java_topic_links.py --list

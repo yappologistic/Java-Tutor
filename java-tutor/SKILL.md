@@ -16,6 +16,7 @@ Use these resources progressively:
 - Read `references/source-map.md` when choosing official sources, documentation URLs, or version policy.
 - Read `references/teaching-workflows.md` for tutoring, exercises, debugging sessions, reviews, and modernization workflows.
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
+- Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
 
@@ -48,6 +49,13 @@ For code review:
 1. Prioritize correctness, security, concurrency, resource management, and compatibility issues.
 2. Cite exact files/lines when working locally.
 3. Recommend modern Java APIs only when they fit the configured source/target version.
+
+For migration planning:
+
+1. Identify current and target Java versions.
+2. Run `scripts/java_migration_plan.py <source-version> <target-version>`.
+3. Supplement the generated checklist with project-specific framework, dependency, build, runtime, and CI constraints.
+4. Verify the target release notes and migration guide before making claims about removed APIs, deprecated APIs, or behavioral changes.
 
 ## Source Discipline
 
