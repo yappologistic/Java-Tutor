@@ -14,6 +14,36 @@ The skill is designed for beginners through senior Java developers. It routes an
 
 ## Install
 
+One-line install from GitHub for the current user:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash
+```
+
+One-line update:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Update
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- update
+```
+
+One-line uninstall:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Uninstall
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- uninstall
+```
+
 Install for the current user:
 
 ```powershell
@@ -24,6 +54,26 @@ On macOS/Linux:
 
 ```bash
 ./install.sh
+```
+
+Update after pulling new changes:
+
+```powershell
+.\install.ps1 -Action Update
+```
+
+```bash
+./install.sh update
+```
+
+Uninstall:
+
+```powershell
+.\install.ps1 -Action Uninstall
+```
+
+```bash
+./install.sh uninstall
 ```
 
 Install globally for all users on the machine:

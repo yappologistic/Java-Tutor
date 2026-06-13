@@ -1,5 +1,39 @@
 # Installation
 
+## One-Line Commands From GitHub
+
+Install for the current user:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash
+```
+
+Update:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Update
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- update
+```
+
+Uninstall:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Uninstall
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- uninstall
+```
+
+Add `-Scope Global` on Windows or `--global` on macOS/Linux for global install/update/uninstall.
+
 ## Windows
 
 Install for the current user:
@@ -64,4 +98,24 @@ Copy the `java-tutor` folder into a Codex skills directory, then restart Codex i
 
 ## Update
 
-Pull the latest repository changes and run the installer again. The installer replaces the installed `java-tutor` folder.
+Pull the latest repository changes and run:
+
+```powershell
+.\install.ps1 -Action Update
+```
+
+```bash
+./install.sh update
+```
+
+The installer replaces the installed `java-tutor` folder.
+
+## Uninstall
+
+```powershell
+.\install.ps1 -Action Uninstall
+```
+
+```bash
+./install.sh uninstall
+```
