@@ -16,6 +16,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Routes language-rule questions to exact JLS sections with `java-tutor/scripts/java_language_rule.py`.
 - Triage collections, Optional, and stream issues with `java-tutor/scripts/java_collections_triage.py`.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
+- Triage Java generics, wildcards, type inference, erasure, raw types, heap pollution, and bridge methods with `java-tutor/scripts/java_generics_triage.py`.
 - Triage Java I/O, NIO, charset, serialization, and socket issues with `java-tutor/scripts/java_io_triage.py`.
 - Triage Java HTTP Client request, response, async, timeout, TLS/proxy/auth, HTTP/2, and WebSocket issues with `java-tutor/scripts/java_http_triage.py`.
 - Triage JDBC connection, SQL parameter, transaction, result set, exception, and date/time mapping issues with `java-tutor/scripts/java_jdbc_triage.py`.

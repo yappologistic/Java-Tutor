@@ -54,6 +54,8 @@ Use `scripts/java_classloading_triage.py <issue-or-alias>` for ClassNotFoundExce
 
 Use `scripts/java_language_rule.py <rule-or-alias>` before explaining or fixing tricky syntax/type-system behavior such as overload resolution, generic inference, erasure, overriding, initialization order, try-with-resources, lambda capture, records, or pattern-variable scope.
 
+Use `scripts/java_generics_triage.py <issue-or-alias>` for generic invariance, wildcard bounds, type inference, erasure/reifiability, raw types, unchecked conversions, heap pollution, generic arrays, varargs, type bounds, bridge methods, and generic API design.
+
 Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compiler errors such as missing symbols, bad imports/classpaths, incompatible types, overload failures, definite assignment, public type/file name mismatches, and source/release mismatches.
 
 Use `scripts/java_http_triage.py <issue-or-alias>` for Java HTTP Client request/response construction, body publishers/handlers, async CompletableFuture chains, timeouts/redirects, proxy/TLS/auth, HTTP/2, and WebSocket issues.
@@ -151,6 +153,8 @@ python java-tutor/scripts/java_classloading_triage.py noclassdeffounderror
 python java-tutor/scripts/java_classloading_triage.py 'META-INF/services' --json
 python java-tutor/scripts/java_language_rule.py overload
 python java-tutor/scripts/java_language_rule.py 'effectively final' --json
+python java-tutor/scripts/java_generics_triage.py pecs
+python java-tutor/scripts/java_generics_triage.py 'heap pollution' --json
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
 python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
 python java-tutor/scripts/java_http_triage.py timeout

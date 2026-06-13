@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
+    SKILL_DIR / "scripts" / "java_generics_triage.py",
     SKILL_DIR / "scripts" / "java_http_triage.py",
     SKILL_DIR / "scripts" / "java_io_triage.py",
     SKILL_DIR / "scripts" / "java_jdbc_triage.py",
@@ -352,6 +353,15 @@ def datetime_triage_urls() -> Iterable[str]:
     yield from java_datetime_triage.official_urls(java_datetime_triage.issues())
 
 
+def generics_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_generics_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_generics_triage.official_urls(java_generics_triage.issues())
+
+
 def language_rule_urls() -> Iterable[str]:
     sys.path.insert(0, str(SKILL_DIR / "scripts"))
     try:
@@ -647,6 +657,7 @@ def check_official_links() -> None:
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
                 *datetime_triage_urls(),
+                *generics_triage_urls(),
                 *http_triage_urls(),
                 *io_triage_urls(),
                 *jdbc_triage_urls(),
