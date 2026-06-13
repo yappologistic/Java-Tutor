@@ -131,3 +131,13 @@ The installer replaces the installed `java-tutor` folder.
 ```bash
 ./install.sh uninstall
 ```
+
+## Verify Installers and Skill Files
+
+Run:
+
+```powershell
+python .\scripts\verify_project.py
+```
+
+Run with `--check-links` to verify the official Java documentation URLs are reachable.

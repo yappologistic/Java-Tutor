@@ -125,7 +125,19 @@ Use $java-tutor to help migrate this project from Java 11 to Java 25.
 
 ## Verify
 
-Run the validation and script tests:
+Run the project verifier:
+
+```powershell
+python .\scripts\verify_project.py
+```
+
+Optionally check official Java source URLs:
+
+```powershell
+python .\scripts\verify_project.py --check-links
+```
+
+Run the lower-level validation and script tests:
 
 ```powershell
 python C:\Users\LENOVO\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\java-tutor
