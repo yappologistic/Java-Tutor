@@ -50,6 +50,8 @@ Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compi
 
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
 
+Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual-thread suitability, concurrent collections, or atomicity. Collect evidence before changing synchronization or threading design.
+
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
 
 For performance incidents, run `scripts/java_performance_triage.py <symptom>` before recommending code, JVM flag, GC, or architecture changes. Prioritize collecting JFR, thread dumps, GC evidence, heap evidence, JVM flags, and workload timing.
@@ -115,6 +117,8 @@ python java-tutor/scripts/java_feature_compat.py records --version 11
 python java-tutor/scripts/java_feature_compat.py virtual-threads --version 21
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
 python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
+python java-tutor/scripts/java_concurrency_triage.py data-race
+python java-tutor/scripts/java_concurrency_triage.py 'thread pool' --json
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
 python java-tutor/scripts/java_learning_path.py beginner
 python java-tutor/scripts/java_learning_path.py senior --goal concurrency

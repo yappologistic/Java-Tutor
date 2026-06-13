@@ -19,6 +19,7 @@ Use these resources progressively:
 - Use `scripts/java_deprecation_audit.py --target <java-version> --artifact <jar-or-classes>` before migration work involving deprecated, for-removal, removed, or internal APIs.
 - Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
+- Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
@@ -71,6 +72,14 @@ For code review:
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
 3. Cite exact files/lines when working locally.
 4. Recommend modern Java APIs only when they fit the configured source/target version.
+
+For concurrency work:
+
+1. Identify whether the issue is shared mutable state, lock ordering, cancellation, executor lifecycle, virtual-thread suitability, concurrent collection usage, or atomicity.
+2. Run `scripts/java_concurrency_triage.py <concern>` before recommending a design or code change.
+3. Ask for or collect evidence such as thread dumps, JFR recordings, stress tests, pool metrics, queue sizes, and reproduction timing.
+4. Ground memory visibility claims in the JLS memory model and API behavior in `java.lang.Thread` or `java.util.concurrent`.
+5. Prefer immutability, confinement, higher-level concurrent utilities, and explicit lifecycle ownership over ad hoc synchronization.
 
 For security work:
 

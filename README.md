@@ -11,6 +11,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Fixes Java compile errors, runtime exceptions, test failures, and build issues.
 - Checks Java feature compatibility with `java-tutor/scripts/java_feature_compat.py`.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
+- Triage Java concurrency symptoms with `java-tutor/scripts/java_concurrency_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
 - Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Triage Java performance symptoms with `java-tutor/scripts/java_performance_triage.py`.

@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
+    SKILL_DIR / "scripts" / "java_concurrency_triage.py",
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
@@ -80,6 +81,16 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.xml/javax/xml/XMLConstants.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/SecureRandom.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Path.html",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/InterruptedException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/package-summary.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ExecutorService.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/Future.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
+    "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -141,6 +152,15 @@ def compile_error_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_compile_error_triage.official_urls(java_compile_error_triage.diagnostics())
+
+
+def concurrency_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_concurrency_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_concurrency_triage.official_urls(java_concurrency_triage.concerns())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -343,6 +363,7 @@ def check_official_links() -> None:
                 *exception_urls(),
                 *review_urls(),
                 *compile_error_urls(),
+                *concurrency_triage_urls(),
                 *learning_path_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
