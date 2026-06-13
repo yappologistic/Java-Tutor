@@ -16,6 +16,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Triage collections, Optional, and stream issues with `java-tutor/scripts/java_collections_triage.py`.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
 - Triage Java I/O, NIO, charset, serialization, and socket issues with `java-tutor/scripts/java_io_triage.py`.
+- Triage JDBC connection, SQL parameter, transaction, result set, exception, and date/time mapping issues with `java-tutor/scripts/java_jdbc_triage.py`.
 - Triage Java concurrency symptoms with `java-tutor/scripts/java_concurrency_triage.py`.
 - Triage Java date/time, time-zone, formatting, and legacy Date/Calendar issues with `java-tutor/scripts/java_datetime_triage.py`.
 - Triage Java numeric precision, rounding, overflow, parsing, and equality issues with `java-tutor/scripts/java_numeric_triage.py`.

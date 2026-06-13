@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
     SKILL_DIR / "scripts" / "java_io_triage.py",
+    SKILL_DIR / "scripts" / "java_jdbc_triage.py",
     SKILL_DIR / "scripts" / "java_jdk_tool.py",
     SKILL_DIR / "scripts" / "java_jvm_option.py",
     SKILL_DIR / "scripts" / "java_language_rule.py",
@@ -117,6 +118,26 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/ServerSocket.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/package-summary.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Connection.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/javax/sql/DataSource.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/DriverManager.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Statement.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/PreparedStatement.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/CallableStatement.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/ResultSet.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/ResultSetMetaData.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/SQLException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/SQLWarning.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/BatchUpdateException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/SQLTimeoutException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/SQLIntegrityConstraintViolationException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Savepoint.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Blob.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Clob.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Date.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Time.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Timestamp.html",
     "https://docs.oracle.com/javase/tutorial/essential/io/path.html",
     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html",
@@ -280,6 +301,15 @@ def io_triage_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_io_triage.official_urls(java_io_triage.issues())
+
+
+def jdbc_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_jdbc_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_jdbc_triage.official_urls(java_jdbc_triage.issues())
 
 
 def jdk_tool_urls() -> Iterable[str]:
@@ -532,6 +562,7 @@ def check_official_links() -> None:
                 *concurrency_triage_urls(),
                 *datetime_triage_urls(),
                 *io_triage_urls(),
+                *jdbc_triage_urls(),
                 *jdk_tool_urls(),
                 *jvm_option_urls(),
                 *language_rule_urls(),

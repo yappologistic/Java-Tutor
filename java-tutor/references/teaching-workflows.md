@@ -60,6 +60,8 @@ Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common e
 
 Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, sockets, URI/URL, and cross-platform filesystem behavior.
 
+Use `scripts/java_jdbc_triage.py <issue-or-alias>` for JDBC connection lifecycle, PreparedStatement parameters, transactions, ResultSet cursor/type handling, batching, SQLException chains, date/time mappings, and LOB streaming.
+
 Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual-thread suitability, concurrent collections, or atomicity. Collect evidence before changing synchronization or threading design.
 
 Use `scripts/java_datetime_triage.py <issue-or-alias>` for Instant versus LocalDateTime, time zones/DST, formatting/parsing, Duration versus Period, legacy Date/Calendar interop, Clock testing, and offset versus zone bugs.
@@ -150,6 +152,8 @@ python java-tutor/scripts/java_datetime_triage.py simpledateformat --json
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
 python java-tutor/scripts/java_io_triage.py utf-8
 python java-tutor/scripts/java_io_triage.py 'socket timeout' --json
+python java-tutor/scripts/java_jdbc_triage.py 'sql injection'
+python java-tutor/scripts/java_jdbc_triage.py timestamp --json
 python java-tutor/scripts/java_numeric_triage.py bigdecimal
 python java-tutor/scripts/java_numeric_triage.py overflow --json
 python java-tutor/scripts/java_regex_triage.py 'string matches'

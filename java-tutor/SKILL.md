@@ -26,6 +26,7 @@ Use these resources progressively:
 - Use `scripts/java_datetime_triage.py <issue-or-alias>` for Instant versus LocalDateTime, time zones/DST, formatting/parsing, Duration versus Period, legacy Date/Calendar interop, Clock testing, and offset versus zone issues.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_io_triage.py <issue-or-alias>` for Path/Files, charsets/text I/O, streams/buffers, resource lifecycle, serialization, socket I/O, and URI/URL issues.
+- Use `scripts/java_jdbc_triage.py <issue-or-alias>` for JDBC connection lifecycle, PreparedStatement parameters, transactions, ResultSet handling, batching, SQLException chains, date/time mappings, and LOB streaming.
 - Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
@@ -84,8 +85,9 @@ For code review:
 4. Run `scripts/java_datetime_triage.py <issue-or-alias>` when reviewing date/time persistence, formatting, time-zone, DST, scheduling, or legacy Date/Calendar code.
 5. Run `scripts/java_numeric_triage.py <issue-or-alias>` when reviewing money, rounding, precision, overflow, parsing, or numeric equality code.
 6. Run `scripts/java_regex_triage.py <issue-or-alias>` when reviewing Pattern/Matcher use, regex replacement, string splitting, or regex performance.
-7. Cite exact files/lines when working locally.
-8. Recommend modern Java APIs only when they fit the configured source/target version.
+7. Run `scripts/java_jdbc_triage.py <issue-or-alias>` when reviewing JDBC resource ownership, SQL parameterization, transactions, ResultSet handling, or SQL exception handling.
+8. Cite exact files/lines when working locally.
+9. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 
