@@ -18,6 +18,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Triage Java I/O, NIO, charset, serialization, and socket issues with `java-tutor/scripts/java_io_triage.py`.
 - Triage Java concurrency symptoms with `java-tutor/scripts/java_concurrency_triage.py`.
 - Triage Java date/time, time-zone, formatting, and legacy Date/Calendar issues with `java-tutor/scripts/java_datetime_triage.py`.
+- Triage Java numeric precision, rounding, overflow, parsing, and equality issues with `java-tutor/scripts/java_numeric_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
 - Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Triage Java performance symptoms with `java-tutor/scripts/java_performance_triage.py`.
@@ -189,3 +190,7 @@ python -m unittest discover -s tests
 ## Source Freshness
 
 The bundled source map was checked against official Java documentation on 2026-06-13. The skill instructs Codex to browse official sources for any answer involving latest releases, support status, security updates, licensing, or preview/incubator status.
+
+## License
+
+This project is fully open source under the MIT License. See `LICENSE`.

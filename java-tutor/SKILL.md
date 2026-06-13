@@ -30,6 +30,7 @@ Use these resources progressively:
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_module_triage.py <issue-or-alias>` for JPMS issues such as module descriptors, module path/class path migration, readability, exports/opens, split packages, services, and jlink images.
+- Use `scripts/java_numeric_triage.py <issue-or-alias>` for floating-point precision, BigDecimal scale/rounding, integer overflow, division, numeric parsing/formatting, and numeric equality issues.
 - Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
 - Use `scripts/java_security_triage.py <risk>` for Java security risks such as deserialization, XML parsing, path traversal, secrets/logging, crypto/TLS, or resource exhaustion.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
@@ -80,8 +81,9 @@ For code review:
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
 3. Run `scripts/java_collections_triage.py <issue-or-alias>` when reviewing collection choice, equality/hashCode, ordering, iteration/mutation, Map updates, Optional usage, or stream pipelines.
 4. Run `scripts/java_datetime_triage.py <issue-or-alias>` when reviewing date/time persistence, formatting, time-zone, DST, scheduling, or legacy Date/Calendar code.
-5. Cite exact files/lines when working locally.
-6. Recommend modern Java APIs only when they fit the configured source/target version.
+5. Run `scripts/java_numeric_triage.py <issue-or-alias>` when reviewing money, rounding, precision, overflow, parsing, or numeric equality code.
+6. Cite exact files/lines when working locally.
+7. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 

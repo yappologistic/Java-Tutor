@@ -41,6 +41,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_module_triage.py",
+    SKILL_DIR / "scripts" / "java_numeric_triage.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_security_triage.py",
@@ -49,6 +50,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_version_consistency.py",
     ROOT / "README.md",
     ROOT / "INSTALL.md",
+    ROOT / "LICENSE",
     ROOT / "install.ps1",
     ROOT / "install.sh",
     ROOT / ".gitattributes",
@@ -143,6 +145,20 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/Clock.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/OffsetDateTime.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/time/ZoneOffset.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigInteger.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/RoundingMode.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Double.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Float.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StrictMath.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ArithmeticException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NumberFormatException.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/NumberFormat.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/DecimalFormat.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
@@ -289,6 +305,15 @@ def module_triage_urls() -> Iterable[str]:
     yield from java_module_triage.official_urls(java_module_triage.issues())
 
 
+def numeric_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_numeric_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_numeric_triage.official_urls(java_numeric_triage.issues())
+
+
 def learning_path_urls() -> Iterable[str]:
     sys.path.insert(0, str(SKILL_DIR / "scripts"))
     try:
@@ -402,6 +427,7 @@ def check_docs() -> None:
         "Linux",
         "macOS",
         "CODEX_GLOBAL_HOME",
+        "MIT License",
     ]:
         if phrase not in combined:
             raise AssertionError(f"Documentation should mention {phrase!r}")
@@ -498,6 +524,7 @@ def check_official_links() -> None:
                 *language_rule_urls(),
                 *learning_path_urls(),
                 *module_triage_urls(),
+                *numeric_triage_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
                 *deprecation_audit_urls(),
