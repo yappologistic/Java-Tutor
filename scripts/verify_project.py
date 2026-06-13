@@ -32,6 +32,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_feature_compat.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
+    SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
@@ -65,6 +66,9 @@ OFFICIAL_URLS = [
     "https://dev.java/learn/classes-objects/",
     "https://dev.java/learn/api/collections-framework/",
     "https://dev.java/learn/api/streams/",
+    "https://dev.java/learn/jvm/jfr/",
+    "https://docs.oracle.com/en/java/javase/25/troubleshoot/diagnostic-tools.html",
+    "https://docs.oracle.com/en/java/javase/25/troubleshoot/troubleshoot-performance-issues-using-jfr.html",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -145,6 +149,15 @@ def version_consistency_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_version_consistency.official_urls()
+
+
+def performance_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_performance_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_performance_triage.official_urls(java_performance_triage.symptoms())
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -303,6 +316,7 @@ def check_official_links() -> None:
                 *compile_error_urls(),
                 *learning_path_urls(),
                 *version_consistency_urls(),
+                *performance_urls(),
             ]
         )
     ):

@@ -21,6 +21,7 @@ Use these resources progressively:
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
+- Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
 - Use `scripts/java_project_info.py` when working in a local Java repository to infer Java version hints from Maven, Gradle, `.java-version`, `.sdkmanrc`, and Dockerfiles before recommending version-specific APIs.
 - Use `scripts/java_version_consistency.py <project-root>` when version hints conflict or when source/target/runtime alignment affects the answer.
 - Use `scripts/java_topic_links.py <topic>` for common Java topics such as records, sealed classes, virtual threads, pattern matching for switch, switch expressions, text blocks, streams, Optional, and modules.
@@ -68,6 +69,14 @@ For code review:
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
 3. Cite exact files/lines when working locally.
 4. Recommend modern Java APIs only when they fit the configured source/target version.
+
+For performance work:
+
+1. Identify the symptom and workload window before changing code.
+2. Run `scripts/java_performance_triage.py <symptom>` for official-tool-backed first checks.
+3. Ask for or collect evidence such as JFR recordings, thread dumps, GC logs, heap histograms, JVM flags, and deployment changes.
+4. Distinguish CPU, allocation, GC, blocking, I/O, startup, and downstream-service bottlenecks.
+5. Recommend code or JVM changes only after evidence points to the bottleneck.
 
 For migration planning:
 
