@@ -22,6 +22,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Triage Java numeric precision, rounding, overflow, parsing, and equality issues with `java-tutor/scripts/java_numeric_triage.py`.
 - Triage Java regex escaping, matching, grouping, replacement, performance, and split issues with `java-tutor/scripts/java_regex_triage.py`.
 - Triage Java reflection, annotations, proxies, method handles, generic metadata, and record reflection with `java-tutor/scripts/java_reflection_triage.py`.
+- Triage Java subprocess, `ProcessBuilder`, environment, pipe, timeout, decoding, and command-security issues with `java-tutor/scripts/java_process_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
 - Generates official-doc-backed review checklists with `java-tutor/scripts/java_code_review_checklist.py`.
 - Triage Java performance symptoms with `java-tutor/scripts/java_performance_triage.py`.

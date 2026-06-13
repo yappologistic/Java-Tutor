@@ -44,6 +44,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_module_triage.py",
     SKILL_DIR / "scripts" / "java_numeric_triage.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
+    SKILL_DIR / "scripts" / "java_process_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
     SKILL_DIR / "scripts" / "java_regex_triage.py",
     SKILL_DIR / "scripts" / "java_reflection_triage.py",
@@ -205,6 +206,13 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandles.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandle.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ProcessBuilder.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Process.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ProcessHandle.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runtime.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/TimeUnit.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/SecurityManager.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
@@ -415,6 +423,15 @@ def performance_urls() -> Iterable[str]:
     yield from java_performance_triage.official_urls(java_performance_triage.symptoms())
 
 
+def process_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_process_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_process_triage.official_urls(java_process_triage.issues())
+
+
 def deprecation_audit_urls() -> Iterable[str]:
     sys.path.insert(0, str(SKILL_DIR / "scripts"))
     try:
@@ -603,6 +620,7 @@ def check_official_links() -> None:
                 *reflection_triage_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
+                *process_triage_urls(),
                 *deprecation_audit_urls(),
                 *security_triage_urls(),
             ]
