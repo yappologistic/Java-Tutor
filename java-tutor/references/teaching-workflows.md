@@ -50,6 +50,8 @@ Use `scripts/java_jdk_tool.py <tool-or-task>` before recommending JDK command-li
 
 Use `scripts/java_jvm_option.py <option-area-or-alias>` before recommending JVM launcher flags for heap sizing, GC selection/logging, preview features, module access, assertions/properties, diagnostics, or virtual-thread diagnostics.
 
+Use `scripts/java_annotations_triage.py <issue-or-alias>` for annotation retention, targets, runtime reflection lookup, @Inherited, @Repeatable, type-use annotations, annotation processors, predefined annotations, and annotation element values.
+
 Use `scripts/java_classloading_triage.py <issue-or-alias>` for ClassNotFoundException/NoClassDefFoundError, resource lookup, thread context ClassLoader, module layers, ServiceLoader, URLClassLoader, duplicate classes, and package sealing issues.
 
 Use `scripts/java_language_rule.py <rule-or-alias>` before explaining or fixing tricky syntax/type-system behavior such as overload resolution, generic inference, erasure, overriding, initialization order, try-with-resources, lambda capture, records, or pattern-variable scope.
@@ -149,6 +151,8 @@ python java-tutor/scripts/java_jdk_tool.py javac
 python java-tutor/scripts/java_jdk_tool.py 'thread dump' --json
 python java-tutor/scripts/java_jvm_option.py xmx
 python java-tutor/scripts/java_jvm_option.py 'gc logging' --json
+python java-tutor/scripts/java_annotations_triage.py retention
+python java-tutor/scripts/java_annotations_triage.py processor --json
 python java-tutor/scripts/java_classloading_triage.py noclassdeffounderror
 python java-tutor/scripts/java_classloading_triage.py 'META-INF/services' --json
 python java-tutor/scripts/java_language_rule.py overload

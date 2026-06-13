@@ -20,6 +20,7 @@ Use these resources progressively:
 - Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
 - Use `scripts/java_jdk_tool.py <tool-or-task>` for official JDK tool manuals and first checks for `java`, `javac`, `jar`, `javadoc`, `jshell`, `jdeps`, `jdeprscan`, `jlink`, `jpackage`, `jcmd`, and `jfr`.
 - Use `scripts/java_jvm_option.py <option-area-or-alias>` before recommending JVM launcher flags for heap sizing, GC selection/logging, preview features, module access, assertions/properties, diagnostics, or virtual-thread diagnostics.
+- Use `scripts/java_annotations_triage.py <issue-or-alias>` for annotation retention, targets, reflection lookup, @Inherited, @Repeatable, type-use annotations, annotation processors, predefined annotations, and annotation element values.
 - Use `scripts/java_classloading_triage.py <issue-or-alias>` for class loading, classpath/module-path, resource lookup, context ClassLoader, ServiceLoader, URLClassLoader, duplicate classes, and package sealing issues.
 - Use `scripts/java_collections_triage.py <issue-or-alias>` for collection choice, equality/hashCode, ordering, concurrent modification, Map updates, Optional usage, and stream pipeline issues.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
@@ -86,18 +87,19 @@ For code review:
 
 1. Prioritize correctness, security, concurrency, resource management, and compatibility issues.
 2. Run `scripts/java_code_review_checklist.py [focus...]` when the review is broad, risky, or security/concurrency/resource related.
-3. Run `scripts/java_classloading_triage.py <issue-or-alias>` when reviewing class/resource loading, ServiceLoader, plugin isolation, classpath/module-path, or duplicate-class issues.
-4. Run `scripts/java_collections_triage.py <issue-or-alias>` when reviewing collection choice, equality/hashCode, ordering, iteration/mutation, Map updates, Optional usage, or stream pipelines.
-5. Run `scripts/java_generics_triage.py <issue-or-alias>` when reviewing generic APIs, wildcard bounds, raw/unchecked warnings, heap pollution, type inference, generic varargs, or bridge/erasure clashes.
-6. Run `scripts/java_http_triage.py <issue-or-alias>` when reviewing Java HTTP Client request/response code, async futures, timeout/redirect policy, TLS/proxy/auth, HTTP/2, or WebSocket use.
-7. Run `scripts/java_datetime_triage.py <issue-or-alias>` when reviewing date/time persistence, formatting, time-zone, DST, scheduling, or legacy Date/Calendar code.
-8. Run `scripts/java_numeric_triage.py <issue-or-alias>` when reviewing money, rounding, precision, overflow, parsing, or numeric equality code.
-9. Run `scripts/java_regex_triage.py <issue-or-alias>` when reviewing Pattern/Matcher use, regex replacement, string splitting, or regex performance.
-10. Run `scripts/java_jdbc_triage.py <issue-or-alias>` when reviewing JDBC resource ownership, SQL parameterization, transactions, ResultSet handling, or SQL exception handling.
-11. Run `scripts/java_reflection_triage.py <issue-or-alias>` when reviewing reflective access, annotations, proxies, generic metadata, method handles, or record reflection.
-12. Run `scripts/java_process_triage.py <issue-or-alias>` when reviewing subprocess launch, stdout/stderr handling, timeouts, environment handling, or command injection risks.
-13. Cite exact files/lines when working locally.
-14. Recommend modern Java APIs only when they fit the configured source/target version.
+3. Run `scripts/java_annotations_triage.py <issue-or-alias>` when reviewing custom annotations, retention/target metadata, repeatable/type-use annotations, annotation processors, or runtime annotation lookup.
+4. Run `scripts/java_classloading_triage.py <issue-or-alias>` when reviewing class/resource loading, ServiceLoader, plugin isolation, classpath/module-path, or duplicate-class issues.
+5. Run `scripts/java_collections_triage.py <issue-or-alias>` when reviewing collection choice, equality/hashCode, ordering, iteration/mutation, Map updates, Optional usage, or stream pipelines.
+6. Run `scripts/java_generics_triage.py <issue-or-alias>` when reviewing generic APIs, wildcard bounds, raw/unchecked warnings, heap pollution, type inference, generic varargs, or bridge/erasure clashes.
+7. Run `scripts/java_http_triage.py <issue-or-alias>` when reviewing Java HTTP Client request/response code, async futures, timeout/redirect policy, TLS/proxy/auth, HTTP/2, or WebSocket use.
+8. Run `scripts/java_datetime_triage.py <issue-or-alias>` when reviewing date/time persistence, formatting, time-zone, DST, scheduling, or legacy Date/Calendar code.
+9. Run `scripts/java_numeric_triage.py <issue-or-alias>` when reviewing money, rounding, precision, overflow, parsing, or numeric equality code.
+10. Run `scripts/java_regex_triage.py <issue-or-alias>` when reviewing Pattern/Matcher use, regex replacement, string splitting, or regex performance.
+11. Run `scripts/java_jdbc_triage.py <issue-or-alias>` when reviewing JDBC resource ownership, SQL parameterization, transactions, ResultSet handling, or SQL exception handling.
+12. Run `scripts/java_reflection_triage.py <issue-or-alias>` when reviewing reflective access, annotations, proxies, generic metadata, method handles, or record reflection.
+13. Run `scripts/java_process_triage.py <issue-or-alias>` when reviewing subprocess launch, stdout/stderr handling, timeouts, environment handling, or command injection risks.
+14. Cite exact files/lines when working locally.
+15. Recommend modern Java APIs only when they fit the configured source/target version.
 
 For concurrency work:
 

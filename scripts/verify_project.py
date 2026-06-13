@@ -27,6 +27,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
+    SKILL_DIR / "scripts" / "java_annotations_triage.py",
     SKILL_DIR / "scripts" / "java_classloading_triage.py",
     SKILL_DIR / "scripts" / "java_collections_triage.py",
     SKILL_DIR / "scripts" / "java_compile_error_triage.py",
@@ -315,6 +316,15 @@ def compile_error_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_compile_error_triage.official_urls(java_compile_error_triage.diagnostics())
+
+
+def annotations_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_annotations_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_annotations_triage.official_urls(java_annotations_triage.issues())
 
 
 def classloading_triage_urls() -> Iterable[str]:
@@ -652,6 +662,7 @@ def check_official_links() -> None:
                 *topic_urls(),
                 *exception_urls(),
                 *review_urls(),
+                *annotations_triage_urls(),
                 *classloading_triage_urls(),
                 *collections_triage_urls(),
                 *compile_error_urls(),

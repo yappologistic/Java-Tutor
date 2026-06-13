@@ -12,6 +12,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Checks Java feature compatibility with `java-tutor/scripts/java_feature_compat.py`.
 - Routes JDK tool questions to official manuals with `java-tutor/scripts/java_jdk_tool.py`.
 - Triage JVM launcher flags with `java-tutor/scripts/java_jvm_option.py`.
+- Triage Java annotation retention, targets, reflection lookup, repeatable/type-use annotations, processors, and predefined annotations with `java-tutor/scripts/java_annotations_triage.py`.
 - Triage Java class loading, classpath/module-path, resource lookup, ServiceLoader, and duplicate-class issues with `java-tutor/scripts/java_classloading_triage.py`.
 - Routes language-rule questions to exact JLS sections with `java-tutor/scripts/java_language_rule.py`.
 - Triage collections, Optional, and stream issues with `java-tutor/scripts/java_collections_triage.py`.
