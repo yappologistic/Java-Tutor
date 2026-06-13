@@ -26,6 +26,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "references" / "teaching-workflows.md",
     SKILL_DIR / "scripts" / "java_doc_link.py",
     SKILL_DIR / "scripts" / "java_code_review_checklist.py",
+    SKILL_DIR / "scripts" / "java_compile_error_triage.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
@@ -43,6 +44,7 @@ OFFICIAL_URLS = [
     "https://www.oracle.com/java/technologies/downloads/",
     "https://docs.oracle.com/en/java/javase/26/",
     "https://docs.oracle.com/en/java/javase/25/docs/api/",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
     "https://docs.oracle.com/en/java/javase/25/security/index.html",
     "https://docs.oracle.com/en/java/javase/25/security/java-security-overview1.html",
     "https://docs.oracle.com/en/java/javase/25/migrate/index.html",
@@ -106,6 +108,15 @@ def review_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_code_review_checklist.official_urls(java_code_review_checklist.select_areas())
+
+
+def compile_error_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_compile_error_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_compile_error_triage.official_urls(java_compile_error_triage.diagnostics())
 
 
 def run(command: list[str], *, timeout: int = 30) -> None:
@@ -254,7 +265,7 @@ def run_tests() -> None:
 def check_official_links() -> None:
     opener = urllib.request.build_opener()
     opener.addheaders = [("User-Agent", "java-tutor-project-verifier/1.0")]
-    for url in sorted(set([*OFFICIAL_URLS, *topic_urls(), *exception_urls(), *review_urls()])):
+    for url in sorted(set([*OFFICIAL_URLS, *topic_urls(), *exception_urls(), *review_urls(), *compile_error_urls()])):
         print("+ HEAD", url)
         request = urllib.request.Request(url, method="HEAD")
         try:

@@ -40,6 +40,8 @@ When editing a repository, run a targeted compile/test command after the fix.
 
 Use `scripts/java_project_info.py <project-root> --pretty` to collect version hints before making version-specific claims or recommending APIs.
 
+Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compiler errors such as missing symbols, bad imports/classpaths, incompatible types, overload failures, definite assignment, public type/file name mismatches, and source/release mismatches.
+
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
 
 Use `scripts/java_verify_commands.py <project-root> --changed-file <path>` to choose the narrowest meaningful compile/test command before running verification.
@@ -96,6 +98,8 @@ python java-tutor/scripts/java_doc_link.py api 'java.lang.String#toUpperCase()' 
 python java-tutor/scripts/java_doc_link.py jls 15 --version 25
 python java-tutor/scripts/java_doc_link.py jep 444
 python java-tutor/scripts/java_doc_link.py release-notes --version 26
+python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
+python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
 python java-tutor/scripts/java_exception_triage.py 'java.lang.NullPointerException'
 python java-tutor/scripts/java_migration_plan.py 8 25
 python java-tutor/scripts/java_project_info.py . --pretty
