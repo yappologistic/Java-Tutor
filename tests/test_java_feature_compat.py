@@ -6,7 +6,11 @@ from java_feature_compat_script import compatibility, parse_major, render_text
 class JavaFeatureCompatTests(unittest.TestCase):
     def test_parse_major_supports_legacy_version_format(self):
         self.assertEqual(parse_major("1.8"), 8)
+        self.assertEqual(parse_major("1.8.0_402"), 8)
         self.assertEqual(parse_major("21.0.2"), 21)
+        self.assertEqual(parse_major("21-ea"), 21)
+        self.assertEqual(parse_major("jdk-21"), 21)
+        self.assertEqual(parse_major("temurin-21"), 21)
 
     def test_records_unavailable_on_java_11(self):
         result = compatibility("records", "11")

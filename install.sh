@@ -57,6 +57,29 @@ fi
 skills_dir="$codex_home/skills"
 target="$skills_dir/java-tutor"
 
+canonical_parent() {
+  path="$1"
+  mkdir -p "$path"
+  (cd "$path" && pwd -P)
+}
+
+validate_target() {
+  skills_real="$(canonical_parent "$skills_dir")"
+  target_parent="$(dirname "$target")"
+  target_name="$(basename "$target")"
+  target_parent_real="$(canonical_parent "$target_parent")"
+  expected_target="$skills_real/java-tutor"
+  resolved_target="$target_parent_real/$target_name"
+  if [[ "$resolved_target" != "$expected_target" ]]; then
+    echo "Refusing to modify unexpected install target: $target" >&2
+    exit 1
+  fi
+}
+
+looks_like_java_tutor_install() {
+  [[ -f "$target/SKILL.md" || -f "$target/.install-info" ]]
+}
+
 if [[ "$action" == "status" ]]; then
   if [[ -f "$target/SKILL.md" ]]; then
     echo "java-tutor ($scope scope) is installed at $target"
@@ -73,7 +96,12 @@ if [[ "$action" == "status" ]]; then
 fi
 
 if [[ "$action" == "uninstall" ]]; then
+  validate_target
   if [[ -d "$target" ]]; then
+    if ! looks_like_java_tutor_install; then
+      echo "Refusing to uninstall $target because it does not look like a java-tutor skill install" >&2
+      exit 1
+    fi
     rm -rf "$target"
     echo "Uninstalled java-tutor ($scope scope) from $target"
   else
@@ -116,13 +144,7 @@ if [[ ! -d "$source_dir" ]]; then
 fi
 
 mkdir -p "$skills_dir"
-case "$target" in
-  "$skills_dir"/java-tutor) ;;
-  *)
-    echo "Refusing to modify unexpected install target: $target" >&2
-    exit 1
-    ;;
-esac
+validate_target
 
 tmp_target="$(mktemp -d "$skills_dir/.java-tutor.tmp.XXXXXX")"
 rmdir "$tmp_target"

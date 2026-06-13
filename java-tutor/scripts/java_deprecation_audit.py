@@ -31,7 +31,11 @@ def normalize_version(value: str) -> str:
 
 
 def docs(target: str) -> tuple[str, ...]:
-    docs_version = target if target in SUPPORTED_TARGETS else DEFAULT_TARGET
+    docs_version = normalize_version(target)
+    if not docs_version.isdigit():
+        raise ValueError("target must be a Java major version, for example 17, 21, or 25")
+    if docs_version not in SUPPORTED_TARGETS:
+        raise ValueError(f"target {docs_version} is not in supported target set: {', '.join(sorted(SUPPORTED_TARGETS, key=int))}")
     return (
         f"https://docs.oracle.com/en/java/javase/{docs_version}/docs/specs/man/jdeprscan.html",
         f"https://docs.oracle.com/en/java/javase/{docs_version}/docs/specs/man/jdeps.html",
@@ -44,10 +48,7 @@ def docs(target: str) -> tuple[str, ...]:
 
 def build_plan(target: str = DEFAULT_TARGET, artifact: str = "<path-to-jar-or-classes>") -> AuditPlan:
     target = normalize_version(target)
-    if not target.isdigit():
-        raise ValueError("target must be a Java major version, for example 17, 21, or 25")
-    if target not in SUPPORTED_TARGETS:
-        raise ValueError(f"target {target} is not in supported target set: {', '.join(sorted(SUPPORTED_TARGETS, key=int))}")
+    docs(target)
 
     commands = (
         f"jdeprscan --release {target} {artifact}",
@@ -73,7 +74,7 @@ def build_plan(target: str = DEFAULT_TARGET, artifact: str = "<path-to-jar-or-cl
 
 
 def official_urls(target: str = DEFAULT_TARGET) -> tuple[str, ...]:
-    return docs(normalize_version(target))
+    return docs(target)
 
 
 def render_text(plan: AuditPlan) -> str:

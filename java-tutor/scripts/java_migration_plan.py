@@ -81,7 +81,7 @@ def migration_checks(source: str, target: str) -> tuple[str, ...]:
     if target_i >= 25:
         checks.extend(
             [
-                "Use the JDK 25 migration guide and release notes as the current LTS baseline.",
+                f"Use the JDK {target} migration guide and release notes for target-specific migration checks.",
                 "Mark preview/incubator APIs clearly and avoid relying on them in production without explicit approval.",
             ]
         )

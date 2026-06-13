@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Iterable
@@ -534,6 +535,13 @@ def run_with_env(command: list[str], env: dict[str, str], *, timeout: int = 30, 
     subprocess.run(command, cwd=cwd, env=env, timeout=timeout, check=True)
 
 
+def run_with_env_expect_failure(command: list[str], env: dict[str, str], *, timeout: int = 30, cwd: Path = ROOT) -> None:
+    print("+ !", " ".join(command))
+    result = subprocess.run(command, cwd=cwd, env=env, timeout=timeout)
+    if result.returncode == 0:
+        raise AssertionError(f"expected command to fail: {' '.join(command)}")
+
+
 def run_with_env_input(
     command: list[str],
     env: dict[str, str],
@@ -565,6 +573,10 @@ def bash_env_prefix(values: dict[str, str]) -> str:
 
 def run_bash_command(shell: str, command: str, *, cwd: Path, timeout: int = 30) -> None:
     run_with_env([shell, "-lc", command], os.environ.copy(), timeout=timeout, cwd=cwd)
+
+
+def run_bash_command_expect_failure(shell: str, command: str, *, cwd: Path, timeout: int = 30) -> None:
+    run_with_env_expect_failure([shell, "-lc", command], os.environ.copy(), timeout=timeout, cwd=cwd)
 
 
 def run_bash_command_input(shell: str, command: str, input_text: str, *, cwd: Path, timeout: int = 30) -> None:
@@ -629,9 +641,14 @@ def check_docs() -> None:
         "macOS",
         "CODEX_GLOBAL_HOME",
         "MIT License",
+        "UseBasicParsing",
+        "Pinned release pattern",
     ]:
         if phrase not in combined:
             raise AssertionError(f"Documentation should mention {phrase!r}")
+    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    if "!gradle/wrapper/gradle-wrapper.jar" not in gitignore:
+        raise AssertionError(".gitignore should allow the standard Gradle wrapper jar")
 
 
 def check_shell_syntax() -> None:
@@ -717,6 +734,7 @@ def check_powershell_installer(
     run_with_env([*command_base, "-Action", "Uninstall"], env)
     if (home / "skills" / "java-tutor" / "SKILL.md").exists():
         raise AssertionError("install.ps1 uninstall left SKILL.md behind")
+    assert_powershell_refuses_non_skill_uninstall(powershell, home, command_base, env)
 
 
 def check_shell_installer(shell: str, home: Path, script: Path, *, archive_url: str | None = None) -> None:
@@ -737,6 +755,7 @@ def check_shell_installer(shell: str, home: Path, script: Path, *, archive_url: 
     run_bash_command(shell, f"{prefix} bash {quoted_script} uninstall", cwd=script.parent)
     if (home / "skills" / "java-tutor" / "SKILL.md").exists():
         raise AssertionError("install.sh uninstall left SKILL.md behind")
+    assert_shell_refuses_non_skill_uninstall(shell, home, prefix, quoted_script, script.parent)
 
 
 def check_shell_stream_installer(shell: str, home: Path, *, archive_url: str) -> None:
@@ -754,6 +773,39 @@ def check_shell_stream_installer(shell: str, home: Path, *, archive_url: str) ->
     run_bash_command_input(shell, f"{prefix} bash -s -- uninstall", script_text, cwd=ROOT)
     if (home / "skills" / "java-tutor" / "SKILL.md").exists():
         raise AssertionError("streamed install.sh uninstall left SKILL.md behind")
+
+
+def assert_powershell_refuses_non_skill_uninstall(
+    powershell: str,
+    home: Path,
+    command_base: list[str],
+    env: dict[str, str],
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    marker = target / "not-a-skill.txt"
+    marker.write_text("do not delete\n", encoding="utf-8")
+    run_with_env_expect_failure([*command_base, "-Action", "Uninstall"], env)
+    if not marker.exists():
+        raise AssertionError("install.ps1 deleted a non-skill install target")
+    shutil.rmtree(target)
+
+
+def assert_shell_refuses_non_skill_uninstall(
+    shell: str,
+    home: Path,
+    prefix: str,
+    quoted_script: str,
+    cwd: Path,
+) -> None:
+    target = home / "skills" / "java-tutor"
+    target.mkdir(parents=True, exist_ok=True)
+    marker = target / "not-a-skill.txt"
+    marker.write_text("do not delete\n", encoding="utf-8")
+    run_bash_command_expect_failure(shell, f"{prefix} bash {quoted_script} uninstall", cwd=cwd)
+    if not marker.exists():
+        raise AssertionError("install.sh deleted a non-skill install target")
+    shutil.rmtree(target)
 
 
 def run_tests() -> None:
@@ -801,6 +853,7 @@ def check_official_links() -> None:
         status = checked_url_status(opener, url)
         if status >= 400:
             raise AssertionError(f"{url} returned HTTP {status}")
+        check_url_fragment(opener, url)
 
 
 def checked_url_status(opener: urllib.request.OpenerDirector, url: str) -> int:
@@ -823,6 +876,19 @@ def checked_url_status(opener: urllib.request.OpenerDirector, url: str) -> int:
             print(f"  retry {attempt}/2 after transient fetch failure: {exc}")
     assert last_error is not None
     raise last_error
+
+
+def check_url_fragment(opener: urllib.request.OpenerDirector, url: str) -> None:
+    base_url, fragment = urllib.parse.urldefrag(url)
+    if not fragment:
+        return
+    request = urllib.request.Request(base_url, method="GET")
+    with opener.open(request, timeout=30) as response:
+        content_type = response.headers.get_content_charset() or "utf-8"
+        page = response.read().decode(content_type, errors="replace")
+    escaped = re.escape(fragment)
+    if not re.search(rf'\b(?:id|name)=["\']{escaped}["\']', page):
+        raise AssertionError(f"{url} fragment was not found as an id/name anchor")
 
 
 def check_release_facts() -> None:

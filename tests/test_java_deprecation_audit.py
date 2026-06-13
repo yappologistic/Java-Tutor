@@ -18,6 +18,10 @@ class JavaDeprecationAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "supported target"):
             build_plan("19")
 
+    def test_official_urls_reject_unsupported_target(self):
+        with self.assertRaisesRegex(ValueError, "supported target"):
+            official_urls("24")
+
     def test_render_text_contains_limitations_and_docs(self):
         text = render_text(build_plan("21"))
         self.assertIn("Limitations:", text)

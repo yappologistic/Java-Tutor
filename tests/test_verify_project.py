@@ -3,6 +3,7 @@ import unittest
 from verify_project_script import (
     OFFICIAL_URLS,
     RELEASE_FACT_CHECKS,
+    check_url_fragment,
     checked_url_status,
     normalize_text,
     parse_frontmatter,
@@ -12,6 +13,16 @@ from verify_project_script import (
 
 class FakeResponse:
     status = 200
+
+    def __init__(self, body: str = ""):
+        self.body = body
+        self.headers = self
+
+    def get_content_charset(self):
+        return "utf-8"
+
+    def read(self):
+        return self.body.encode("utf-8")
 
     def __enter__(self):
         return self
@@ -29,6 +40,14 @@ class FlakyOpener:
         if self.calls == 1:
             raise TimeoutError("temporary timeout")
         return FakeResponse()
+
+
+class BodyOpener:
+    def __init__(self, body: str):
+        self.body = body
+
+    def open(self, request, timeout):
+        return FakeResponse(self.body)
 
 
 class VerifyProjectTests(unittest.TestCase):
@@ -69,6 +88,11 @@ class VerifyProjectTests(unittest.TestCase):
         opener = FlakyOpener()
         self.assertEqual(checked_url_status(opener, "https://docs.oracle.com/example"), 200)
         self.assertEqual(opener.calls, 2)
+
+    def test_check_url_fragment_requires_matching_anchor(self):
+        check_url_fragment(BodyOpener('<section id="good-anchor"></section>'), "https://docs.oracle.com/example#good-anchor")
+        with self.assertRaisesRegex(AssertionError, "fragment"):
+            check_url_fragment(BodyOpener('<section id="other-anchor"></section>'), "https://docs.oracle.com/example#missing")
 
 
 if __name__ == "__main__":

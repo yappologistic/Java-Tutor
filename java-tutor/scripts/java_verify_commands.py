@@ -6,12 +6,28 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
+import subprocess
 from pathlib import Path
 from typing import Any
 
 
 def command_string(parts: list[str]) -> str:
-    return " ".join(parts)
+    if os.name == "nt":
+        return subprocess.list2cmdline(parts)
+    return shlex.join(parts)
+
+
+def command_item(scope: str, argv: list[str], reason: str) -> dict[str, Any]:
+    return {"scope": scope, "argv": argv, "command": command_string(argv), "reason": reason}
+
+
+def is_relative_to(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
 
 
 def gradle_executable(root: Path) -> str:
@@ -50,58 +66,36 @@ def class_name_from_path(path: Path) -> str:
 def suggest_commands(root: Path, changed_file: str | None = None) -> dict[str, Any]:
     root = root.resolve()
     changed_path = (root / changed_file).resolve() if changed_file else None
-    commands: list[dict[str, str]] = []
+    if changed_path and not is_relative_to(changed_path, root):
+        changed_path = None
+    commands: list[dict[str, Any]] = []
 
     if has_maven(root):
         mvn = maven_executable(root)
         if changed_path and changed_path.suffix == ".java" and looks_like_test(changed_path):
-            commands.append(
-                {
-                    "scope": "narrow",
-                    "command": command_string([mvn, f"-Dtest={class_name_from_path(changed_path)}", "test"]),
-                    "reason": "Run the changed Maven test class only.",
-                }
-            )
+            commands.append(command_item("narrow", [mvn, f"-Dtest={class_name_from_path(changed_path)}", "test"], "Run the changed Maven test class only."))
         commands.extend(
             [
-                {"scope": "compile", "command": command_string([mvn, "test-compile"]), "reason": "Compile production and test sources."},
-                {"scope": "broad", "command": command_string([mvn, "test"]), "reason": "Run the Maven test suite."},
+                command_item("compile", [mvn, "test-compile"], "Compile production and test sources."),
+                command_item("broad", [mvn, "test"], "Run the Maven test suite."),
             ]
         )
     elif has_gradle(root):
         gradle = gradle_executable(root)
         if changed_path and changed_path.suffix == ".java" and looks_like_test(changed_path):
-            commands.append(
-                {
-                    "scope": "narrow",
-                    "command": command_string([gradle, "test", f"--tests", class_name_from_path(changed_path)]),
-                    "reason": "Run the changed Gradle test class only.",
-                }
-            )
+            commands.append(command_item("narrow", [gradle, "test", "--tests", class_name_from_path(changed_path)], "Run the changed Gradle test class only."))
         commands.extend(
             [
-                {"scope": "compile", "command": command_string([gradle, "compileJava", "compileTestJava"]), "reason": "Compile Gradle production and test sources."},
-                {"scope": "broad", "command": command_string([gradle, "test"]), "reason": "Run the Gradle test suite."},
+                command_item("compile", [gradle, "compileJava", "compileTestJava"], "Compile Gradle production and test sources."),
+                command_item("broad", [gradle, "test"], "Run the Gradle test suite."),
             ]
         )
     else:
         java_files = sorted(root.glob("*.java"))
         if changed_path and changed_path.suffix == ".java":
-            commands.append(
-                {
-                    "scope": "single-file",
-                    "command": command_string(["javac", str(changed_path)]),
-                    "reason": "Compile the changed Java file directly.",
-                }
-            )
+            commands.append(command_item("single-file", ["javac", str(changed_path)], "Compile the changed Java file directly."))
         elif java_files:
-            commands.append(
-                {
-                    "scope": "single-file",
-                    "command": command_string(["javac", str(java_files[0])]),
-                    "reason": "Compile a top-level Java file directly.",
-                }
-            )
+            commands.append(command_item("single-file", ["javac", str(java_files[0])], "Compile a top-level Java file directly."))
 
     return {
         "root": str(root),

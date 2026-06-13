@@ -10,7 +10,12 @@ class JavaMigrationPlanTests(unittest.TestCase):
         self.assertEqual(plan.target, "25")
         self.assertIn("https://docs.oracle.com/en/java/javase/25/migrate/index.html", plan.official_docs)
         self.assertTrue(any("Java EE and CORBA" in check for check in plan.checks))
-        self.assertTrue(any("current LTS baseline" in check for check in plan.checks))
+        self.assertTrue(any("JDK 25 migration guide" in check for check in plan.checks))
+
+    def test_target_26_uses_target_specific_guidance(self):
+        plan = build_plan("25", "26")
+        self.assertTrue(any("JDK 26 migration guide" in check for check in plan.checks))
+        self.assertFalse(any("JDK 25 migration guide" in check for check in plan.checks))
 
     def test_normalizes_legacy_source_version(self):
         plan = build_plan("1.8", "21")

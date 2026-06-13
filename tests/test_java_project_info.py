@@ -88,6 +88,17 @@ class JavaProjectInfoTests(unittest.TestCase):
             info = infer_project_info(root)
             self.assertIn("25", info["detected_versions"])
 
+    def test_detects_legacy_gradle_java_version_constant(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "build.gradle").write_text(
+                "sourceCompatibility = JavaVersion.VERSION_1_8\n",
+                encoding="utf-8",
+            )
+            info = infer_project_info(root)
+            self.assertIn("8", info["detected_versions"])
+            self.assertEqual(info["recommended_version"], "8")
+
     def test_detects_gradle_subproject_toolchain(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

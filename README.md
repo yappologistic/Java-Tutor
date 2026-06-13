@@ -40,10 +40,10 @@ The skill is designed for beginners through senior Java developers. It routes an
 
 ## Install
 
-One-line install from GitHub for the current user on Windows:
+One-line install from GitHub for the current user on Windows. These commands track `main`, so they install the latest repository state. For reproducible installs after a release is tagged, replace `main` with a tag such as `v1.0.0`.
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p
+$p="$env:TEMP\java-tutor-install.ps1"; Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p
 ```
 
 One-line install from GitHub for the current user on Linux and macOS:
@@ -55,7 +55,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line update:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Update
+$p="$env:TEMP\java-tutor-install.ps1"; Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Update
 ```
 
 ```bash
@@ -65,7 +65,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line status:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Status
+$p="$env:TEMP\java-tutor-install.ps1"; Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Status
 ```
 
 ```bash
@@ -75,7 +75,14 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line uninstall:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Uninstall
+$p="$env:TEMP\java-tutor-install.ps1"; Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Uninstall
+```
+
+Pinned release pattern:
+
+```text
+https://raw.githubusercontent.com/yappologistic/Java-Tutor/<tag>/install.ps1
+https://raw.githubusercontent.com/yappologistic/Java-Tutor/<tag>/install.sh
 ```
 
 ```bash

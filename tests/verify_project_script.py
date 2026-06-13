@@ -11,6 +11,7 @@ spec.loader.exec_module(module)
 OFFICIAL_URLS = module.OFFICIAL_URLS
 RELEASE_FACT_CHECKS = module.RELEASE_FACT_CHECKS
 checked_url_status = module.checked_url_status
+check_url_fragment = module.check_url_fragment
 normalize_text = module.normalize_text
 parse_frontmatter = module.parse_frontmatter
 topic_urls = module.topic_urls

@@ -43,6 +43,30 @@ class JavaVerifyCommandsTests(unittest.TestCase):
             result = suggest_commands(root)
             self.assertEqual(result["commands"][0]["scope"], "single-file")
             self.assertIn("javac", result["commands"][0]["command"])
+            self.assertEqual(result["commands"][0]["argv"][0], "javac")
+
+    def test_changed_file_with_spaces_is_quoted_in_command_text(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "space dir"
+            root.mkdir()
+            changed = root / "Hello World.java"
+            changed.write_text("class HelloWorld {}", encoding="utf-8")
+            result = suggest_commands(root, "Hello World.java")
+            command = result["commands"][0]["command"]
+            self.assertIn("javac", command)
+            self.assertNotEqual(command, " ".join(result["commands"][0]["argv"]))
+
+    def test_changed_file_outside_root_is_ignored(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            parent = Path(tmp)
+            root = parent / "project"
+            root.mkdir()
+            outside = parent / "OtherTest.java"
+            outside.write_text("class OtherTest {}", encoding="utf-8")
+            (root / "pom.xml").write_text("<project />", encoding="utf-8")
+            result = suggest_commands(root, "../OtherTest.java")
+            self.assertIsNone(result["changed_file"])
+            self.assertFalse(any(item["scope"] == "narrow" for item in result["commands"]))
 
     def test_render_text_lists_commands(self):
         result = {"commands": [{"scope": "broad", "command": "mvn test", "reason": "Run tests."}]}

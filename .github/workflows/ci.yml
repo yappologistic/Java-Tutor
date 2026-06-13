@@ -3,6 +3,8 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "0 9 * * 1"
 
 jobs:
   verify:
@@ -19,3 +21,15 @@ jobs:
           python-version: "3.x"
       - name: Verify project
         run: python scripts/verify_project.py
+
+  live-links:
+    name: Live official link check
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Verify official links and release facts
+        run: python scripts/verify_project.py --check-links

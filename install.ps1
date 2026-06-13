@@ -27,6 +27,19 @@ if ($Scope -eq "Global") {
 $skillsDir = Join-Path $codexHome "skills"
 $target = Join-Path $skillsDir "java-tutor"
 
+function Assert-ExpectedTarget {
+    $skillsFullPath = [System.IO.Path]::GetFullPath($skillsDir)
+    $targetFullPath = [System.IO.Path]::GetFullPath($target)
+    $expectedTarget = [System.IO.Path]::GetFullPath((Join-Path $skillsDir "java-tutor"))
+    if ($targetFullPath -ne $expectedTarget -or -not $targetFullPath.StartsWith($skillsFullPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to modify unexpected install target: $target"
+    }
+}
+
+function Test-JavaTutorInstall {
+    return (Test-Path (Join-Path $target "SKILL.md")) -or (Test-Path (Join-Path $target ".install-info"))
+}
+
 if ($Action -eq "Status") {
     if (Test-Path (Join-Path $target "SKILL.md")) {
         Write-Host "java-tutor ($Scope scope) is installed at $target"
@@ -49,7 +62,11 @@ if ($Action -eq "Status") {
 }
 
 if ($Action -eq "Uninstall") {
+    Assert-ExpectedTarget
     if (Test-Path $target) {
+        if (-not (Test-JavaTutorInstall)) {
+            throw "Refusing to uninstall $target because it does not look like a java-tutor skill install"
+        }
         Remove-Item -Recurse -Force -LiteralPath $target
         Write-Host "Uninstalled java-tutor ($Scope scope) from $target"
     } else {
@@ -69,7 +86,7 @@ if (-not (Test-Path $source)) {
     if (Test-Path -LiteralPath $repoUrl) {
         Copy-Item -LiteralPath $repoUrl -Destination $zipPath
     } else {
-        Invoke-WebRequest -Uri $repoUrl -OutFile $zipPath
+        Invoke-WebRequest -UseBasicParsing -Uri $repoUrl -OutFile $zipPath
     }
     Expand-Archive -LiteralPath $zipPath -DestinationPath $tempRoot -Force
     $source = Join-Path $tempRoot "Java-Tutor-main\java-tutor"
@@ -81,13 +98,7 @@ if (-not (Test-Path $source)) {
 
 try {
     New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-
-    $skillsFullPath = [System.IO.Path]::GetFullPath($skillsDir)
-    $targetFullPath = [System.IO.Path]::GetFullPath($target)
-    $expectedTarget = [System.IO.Path]::GetFullPath((Join-Path $skillsDir "java-tutor"))
-    if ($targetFullPath -ne $expectedTarget -or -not $targetFullPath.StartsWith($skillsFullPath, [System.StringComparison]::OrdinalIgnoreCase)) {
-        throw "Refusing to modify unexpected install target: $target"
-    }
+    Assert-ExpectedTarget
 
     $tempTarget = Join-Path $skillsDir (".java-tutor.tmp." + [System.Guid]::NewGuid().ToString("N"))
     $backupTarget = Join-Path $skillsDir (".java-tutor.backup." + [System.Guid]::NewGuid().ToString("N"))

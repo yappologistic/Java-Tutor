@@ -30,6 +30,10 @@ class JavaRegexTriageTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith("https://docs.oracle.com/"), url)
 
+    def test_no_known_bad_pattern_summary_fragment(self):
+        urls = official_urls(issues())
+        self.assertFalse(any(url.endswith("Pattern.html#sum") for url in urls), urls)
+
 
 if __name__ == "__main__":
     unittest.main()

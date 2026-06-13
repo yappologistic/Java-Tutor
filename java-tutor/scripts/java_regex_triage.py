@@ -35,7 +35,7 @@ def tutorial(path: str) -> str:
 def issues(version: str = DEFAULT_VERSION) -> tuple[RegexIssue, ...]:
     pattern = api("java/util/regex/Pattern.html", version)
     matcher = api("java/util/regex/Matcher.html", version)
-    pattern_syntax = api("java/util/regex/Pattern.html#sum", version)
+    pattern_syntax = api("java/util/regex/Pattern.html", version)
     pattern_syntax_exception = api("java/util/regex/PatternSyntaxException.html", version)
     string_api = api("java/lang/String.html", version)
     return (

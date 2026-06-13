@@ -61,7 +61,7 @@ SKIP_DIR_NAMES = {
 
 
 def normalize_version(value: str) -> str:
-    value = value.strip().strip('"').strip("'")
+    value = value.strip().strip('"').strip("'").replace("_", ".")
     if value.startswith("1."):
         return value.split(".", 1)[1]
     java_distribution_match = re.search(r"(?:java|jdk|jre|openjdk|temurin|zulu|corretto|graalvm)[^\d]*(\d{1,2})", value)
@@ -70,7 +70,7 @@ def normalize_version(value: str) -> str:
     leading_version_match = re.match(r"(\d{1,2})(?:[._-]|$)", value)
     if leading_version_match:
         return leading_version_match.group(1)
-    return value.replace("_", ".")
+    return value
 
 
 def add_hint(hints: list[dict[str, str]], source: Path, kind: str, value: str) -> None:

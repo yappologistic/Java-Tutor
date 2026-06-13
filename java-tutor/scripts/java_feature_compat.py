@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from dataclasses import asdict
 from typing import Any
@@ -13,9 +14,12 @@ import java_topic_links
 
 
 def parse_major(version: str) -> int:
-    value = version.strip().lower()
+    value = version.strip().lower().replace("_", ".")
     if value.startswith("1."):
         value = value[2:]
+    distribution_match = re.search(r"(?:java|jdk|jre|openjdk|temurin|zulu|corretto|graalvm)[^\d]*(\d{1,2})", value)
+    if distribution_match:
+        return int(distribution_match.group(1))
     digits = ""
     for char in value:
         if char.isdigit():
