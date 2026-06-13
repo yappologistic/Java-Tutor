@@ -44,6 +44,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_numeric_triage.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
     SKILL_DIR / "scripts" / "java_project_info.py",
+    SKILL_DIR / "scripts" / "java_regex_triage.py",
     SKILL_DIR / "scripts" / "java_security_triage.py",
     SKILL_DIR / "scripts" / "java_topic_links.py",
     SKILL_DIR / "scripts" / "java_verify_commands.py",
@@ -159,6 +160,9 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/NumberFormat.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/DecimalFormat.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Pattern.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/Matcher.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/regex/PatternSyntaxException.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Module.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ServiceLoader.html",
@@ -312,6 +316,15 @@ def numeric_triage_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_numeric_triage.official_urls(java_numeric_triage.issues())
+
+
+def regex_triage_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_regex_triage
+    finally:
+        sys.path.pop(0)
+    yield from java_regex_triage.official_urls(java_regex_triage.issues())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -525,6 +538,7 @@ def check_official_links() -> None:
                 *learning_path_urls(),
                 *module_triage_urls(),
                 *numeric_triage_urls(),
+                *regex_triage_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),
                 *deprecation_audit_urls(),
