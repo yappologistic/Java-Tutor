@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("Install", "Update", "Uninstall")]
+    [ValidateSet("Install", "Update", "Uninstall", "Status")]
     [string]$Action = "Install",
 
     [ValidateSet("User", "Global")]
@@ -25,6 +25,15 @@ if ($Scope -eq "Global") {
 
 $skillsDir = Join-Path $codexHome "skills"
 $target = Join-Path $skillsDir "java-tutor"
+
+if ($Action -eq "Status") {
+    if (Test-Path (Join-Path $target "SKILL.md")) {
+        Write-Host "java-tutor ($Scope scope) is installed at $target"
+    } else {
+        Write-Host "java-tutor ($Scope scope) is not installed at $target"
+    }
+    exit 0
+}
 
 if ($Action -eq "Uninstall") {
     if (Test-Path $target) {

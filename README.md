@@ -36,6 +36,16 @@ $p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yap
 curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- update
 ```
 
+One-line status:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Status
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- status
+```
+
 One-line uninstall:
 
 ```powershell
@@ -76,6 +86,16 @@ Uninstall:
 
 ```bash
 ./install.sh uninstall
+```
+
+Status:
+
+```powershell
+.\install.ps1 -Action Status
+```
+
+```bash
+./install.sh status
 ```
 
 Install globally for all users on the machine:
@@ -131,7 +151,7 @@ Run the project verifier:
 python .\scripts\verify_project.py
 ```
 
-The verifier checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall behavior in a temporary Codex home, and the Python tests.
+The verifier checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall/status behavior in a temporary Codex home, and the Python tests.
 
 Optionally check official Java source URLs:
 

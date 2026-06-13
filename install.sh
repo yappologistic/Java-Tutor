@@ -10,7 +10,7 @@ temp_root=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    install|update|uninstall)
+    install|update|uninstall|status)
       action="$1"
       ;;
     --user)
@@ -20,7 +20,7 @@ while [[ $# -gt 0 ]]; do
       scope="global"
       ;;
     *)
-      echo "Usage: $0 [install|update|uninstall] [--user|--global]" >&2
+      echo "Usage: $0 [install|update|uninstall|status] [--user|--global]" >&2
       exit 2
       ;;
   esac
@@ -48,6 +48,15 @@ else
 fi
 skills_dir="$codex_home/skills"
 target="$skills_dir/java-tutor"
+
+if [[ "$action" == "status" ]]; then
+  if [[ -f "$target/SKILL.md" ]]; then
+    echo "java-tutor ($scope scope) is installed at $target"
+  else
+    echo "java-tutor ($scope scope) is not installed at $target"
+  fi
+  exit 0
+fi
 
 if [[ "$action" == "uninstall" ]]; then
   if [[ -d "$target" ]]; then

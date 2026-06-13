@@ -144,9 +144,17 @@ def check_installers() -> None:
             if not powershell:
                 print("Skipping install.ps1 smoke test: PowerShell is not available")
                 return
+            run_with_env(
+                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Status"],
+                env,
+            )
             run_with_env([powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1"], env)
             if not skill_file.is_file():
                 raise AssertionError("install.ps1 did not install SKILL.md")
+            run_with_env(
+                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Status"],
+                env,
+            )
             run_with_env(
                 [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Update"],
                 env,
@@ -165,9 +173,11 @@ def check_installers() -> None:
         if not shell:
             print("Skipping install.sh smoke test: sh/bash is not available")
             return
+        run_with_env([shell, "./install.sh", "status"], env)
         run_with_env([shell, "./install.sh"], env)
         if not skill_file.is_file():
             raise AssertionError("install.sh did not install SKILL.md")
+        run_with_env([shell, "./install.sh", "status"], env)
         run_with_env([shell, "./install.sh", "update"], env)
         if not skill_file.is_file():
             raise AssertionError("install.sh update removed SKILL.md")

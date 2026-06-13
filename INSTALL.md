@@ -26,6 +26,16 @@ $p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yap
 curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- update
 ```
 
+Status:
+
+```powershell
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Status
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash -s -- status
+```
+
 Uninstall:
 
 ```powershell
@@ -132,6 +142,16 @@ The installer replaces the installed `java-tutor` folder.
 ./install.sh uninstall
 ```
 
+## Status
+
+```powershell
+.\install.ps1 -Action Status
+```
+
+```bash
+./install.sh status
+```
+
 ## Verify Installers and Skill Files
 
 Run:
@@ -140,4 +160,4 @@ Run:
 python .\scripts\verify_project.py
 ```
 
-This checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall behavior in a temporary Codex home, and the Python tests. Run with `--check-links` to verify the official Java documentation URLs are reachable.
+This checks required skill files, metadata, documentation coverage, installer syntax, install/update/uninstall/status behavior in a temporary Codex home, and the Python tests. Run with `--check-links` to verify the official Java documentation URLs are reachable.
