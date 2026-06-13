@@ -4,9 +4,13 @@
 
 Install for the current user:
 
+Windows:
+
 ```powershell
 $p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
 ```
+
+Linux/macOS:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash
@@ -86,8 +90,16 @@ sudo ./install.sh --global
 
 The global Unix target is:
 
+Linux:
+
 ```text
 /usr/local/share/codex/skills/java-tutor
+```
+
+macOS:
+
+```text
+/Library/Application Support/Codex/skills/java-tutor
 ```
 
 Set `CODEX_GLOBAL_HOME` to override the global Codex home before running the installer.

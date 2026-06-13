@@ -14,11 +14,13 @@ The skill is designed for beginners through senior Java developers. It routes an
 
 ## Install
 
-One-line install from GitHub for the current user:
+One-line install from GitHub for the current user on Windows:
 
 ```powershell
 $p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
 ```
+
+One-line install from GitHub for the current user on Linux and macOS:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.sh | bash
@@ -82,16 +84,30 @@ Install globally for all users on the machine:
 .\install.ps1 -Scope Global
 ```
 
+Linux:
+
 ```bash
 sudo ./install.sh --global
 ```
 
-The global location defaults to `C:\ProgramData\Codex\skills\java-tutor` on Windows and `/usr/local/share/codex/skills/java-tutor` on macOS/Linux. Set `CODEX_GLOBAL_HOME` before running the installer if your Codex setup uses a different global skill directory.
+macOS:
+
+```bash
+sudo ./install.sh --global
+```
+
+The global location defaults to `C:\ProgramData\Codex\skills\java-tutor` on Windows, `/usr/local/share/codex/skills/java-tutor` on Linux, and `/Library/Application Support/Codex/skills/java-tutor` on macOS. Set `CODEX_GLOBAL_HOME` before running the installer if your Codex setup uses a different global skill directory.
 
 Or copy the `java-tutor` folder into a Codex skills directory:
 
 ```text
 C:\Users\<you>\.codex\skills\java-tutor
+```
+
+Linux/macOS user installs default to:
+
+```text
+~/.codex/skills/java-tutor
 ```
 
 Restart Codex after installation if the skill does not appear immediately.

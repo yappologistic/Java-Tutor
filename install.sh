@@ -28,7 +28,21 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$scope" == "global" ]]; then
-  codex_home="${CODEX_GLOBAL_HOME:-/usr/local/share/codex}"
+  if [[ -n "${CODEX_GLOBAL_HOME:-}" ]]; then
+    codex_home="$CODEX_GLOBAL_HOME"
+  else
+    case "$(uname -s)" in
+      Darwin)
+        codex_home="/Library/Application Support/Codex"
+        ;;
+      Linux)
+        codex_home="/usr/local/share/codex"
+        ;;
+      *)
+        codex_home="/usr/local/share/codex"
+        ;;
+    esac
+  fi
 else
   codex_home="${CODEX_HOME:-$HOME/.codex}"
 fi
