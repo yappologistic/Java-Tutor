@@ -30,6 +30,12 @@ class JavaClassLoadingTriageTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith("https://docs.oracle.com/"), url)
 
+    def test_spec_links_honor_requested_version(self):
+        issue = find_issue("not-found", version="21")
+        self.assertTrue(any("/jls/se21/" in url for url in issue.docs), issue.docs)
+        self.assertTrue(any("/jvms/se21/" in url for url in issue.docs), issue.docs)
+        self.assertFalse(any("/jls/se25/" in url or "/jvms/se25/" in url for url in issue.docs), issue.docs)
+
 
 if __name__ == "__main__":
     unittest.main()

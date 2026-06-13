@@ -30,6 +30,11 @@ class JavaJdkToolTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith("https://docs.oracle.com/"), url)
 
+    def test_jfr_troubleshooting_link_honors_requested_version(self):
+        tool = find_tool("jfr", version="21")
+        self.assertTrue(any("/java/javase/21/troubleshoot/" in url for url in tool.docs), tool.docs)
+        self.assertFalse(any("/java/javase/25/troubleshoot/" in url for url in tool.docs), tool.docs)
+
 
 if __name__ == "__main__":
     unittest.main()

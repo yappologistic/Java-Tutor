@@ -30,6 +30,11 @@ class JavaIoTriageTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith(("https://docs.oracle.com/", "https://www.oracle.com/java/")), url)
 
+    def test_try_with_resources_jls_link_honors_requested_version(self):
+        issue = find_issue("try with resources", version="21")
+        self.assertTrue(any("/jls/se21/" in url for url in issue.docs), issue.docs)
+        self.assertFalse(any("/jls/se25/" in url for url in issue.docs), issue.docs)
+
 
 if __name__ == "__main__":
     unittest.main()

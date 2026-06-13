@@ -30,6 +30,11 @@ class JavaConcurrencyTriageTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith("https://docs.oracle.com/"))
 
+    def test_jls_memory_model_link_honors_requested_version(self):
+        concern = find_concern("data-race", version="21")
+        self.assertTrue(any("/jls/se21/" in url for url in concern.docs), concern.docs)
+        self.assertFalse(any("/jls/se25/" in url for url in concern.docs), concern.docs)
+
 
 if __name__ == "__main__":
     unittest.main()

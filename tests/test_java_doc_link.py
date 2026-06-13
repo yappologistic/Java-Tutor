@@ -22,10 +22,34 @@ class JavaDocLinkTests(unittest.TestCase):
             "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#toUpperCase()",
         )
 
+    def test_nested_class_link(self):
+        self.assertEqual(
+            build_link("api", "java.util.Map.Entry", "25"),
+            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Map.Entry.html",
+        )
+
     def test_infers_non_base_module(self):
         self.assertEqual(
             build_link("api", "java.sql.Date", "25"),
             "https://docs.oracle.com/en/java/javase/25/docs/api/java.sql/java/sql/Date.html",
+        )
+
+    def test_longest_prefix_module_inference(self):
+        self.assertEqual(
+            build_link("api", "java.awt.datatransfer.Clipboard", "25"),
+            "https://docs.oracle.com/en/java/javase/25/docs/api/java.datatransfer/java/awt/datatransfer/Clipboard.html",
+        )
+
+    def test_java_compiler_module_inference(self):
+        self.assertEqual(
+            build_link("api", "javax.annotation.processing.Processor", "25"),
+            "https://docs.oracle.com/en/java/javase/25/docs/api/java.compiler/javax/annotation/processing/Processor.html",
+        )
+
+    def test_security_jgss_module_inference(self):
+        self.assertEqual(
+            build_link("api", "javax.security.auth.kerberos.KerberosPrincipal", "25"),
+            "https://docs.oracle.com/en/java/javase/25/docs/api/java.security.jgss/javax/security/auth/kerberos/KerberosPrincipal.html",
         )
 
     def test_jls_link(self):

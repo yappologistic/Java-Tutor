@@ -28,6 +28,10 @@ def man_page(tool: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/docs/specs/man/{tool}.html"
 
 
+def troubleshoot_page(path: str, version: str = DEFAULT_VERSION) -> str:
+    return f"https://docs.oracle.com/en/java/javase/{version}/troubleshoot/{path}"
+
+
 def tools(version: str = DEFAULT_VERSION) -> tuple[JdkTool, ...]:
     return (
         JdkTool(
@@ -204,7 +208,7 @@ def tools(version: str = DEFAULT_VERSION) -> tuple[JdkTool, ...]:
                 "Redact or protect recordings because they may contain sensitive runtime data.",
             ),
             common_options=("print", "summary", "view", "metadata", "assemble", "disassemble"),
-            docs=(man_page("jfr", version), "https://docs.oracle.com/en/java/javase/25/troubleshoot/troubleshoot-performance-issues-using-jfr.html"),
+            docs=(man_page("jfr", version), troubleshoot_page("troubleshoot-performance-issues-using-jfr.html", version)),
         ),
     )
 

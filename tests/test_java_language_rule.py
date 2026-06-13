@@ -30,6 +30,16 @@ class JavaLanguageRuleTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith(("https://docs.oracle.com/", "https://openjdk.org/")), url)
 
+    def test_api_and_language_links_honor_requested_version(self):
+        try_with_resources = find_rule("try-with-resources", version="21")
+        records = find_rule("records", version="21")
+        self.assertIn(
+            "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/AutoCloseable.html",
+            try_with_resources.docs,
+        )
+        self.assertIn("https://docs.oracle.com/en/java/javase/21/language/records.html", records.docs)
+        self.assertFalse(any("/java/javase/25/" in url for url in try_with_resources.docs + records.docs))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -23,6 +24,40 @@ JAVA_TAG_PATTERNS = [
     r"(?:java|jdk|jre|openjdk|temurin|zulu|corretto|graalvm)[^\s:.-]*[-_:]?(\d{1,2})",
     r"(\d{1,2})(?:-jdk|-jre)",
 ]
+COMPILE_HINT_TOKENS = (
+    "compiler",
+    "source",
+    "target",
+    "release",
+    "gradle-java-version",
+    "java.version",
+)
+RUNTIME_HINT_TOKENS = (
+    "docker",
+    "java-version-file",
+    "sdkman",
+    "java.home",
+)
+PROJECT_FILENAMES = {
+    ".java-version",
+    ".sdkmanrc",
+    "pom.xml",
+    "build.gradle",
+    "build.gradle.kts",
+    "gradle.properties",
+    "Dockerfile",
+}
+SKIP_DIR_NAMES = {
+    ".git",
+    ".gradle",
+    ".idea",
+    ".mvn",
+    "build",
+    "dist",
+    "node_modules",
+    "out",
+    "target",
+}
 
 
 def normalize_version(value: str) -> str:
@@ -40,6 +75,22 @@ def normalize_version(value: str) -> str:
 
 def add_hint(hints: list[dict[str, str]], source: Path, kind: str, value: str) -> None:
     hints.append({"source": str(source), "kind": kind, "value": normalize_version(value)})
+
+
+def discover_project_dirs(root: Path) -> list[Path]:
+    discovered: list[Path] = []
+    seen: set[Path] = set()
+    for current, dir_names, file_names in os.walk(root):
+        dir_names[:] = [name for name in dir_names if name not in SKIP_DIR_NAMES]
+        current_path = Path(current)
+        names = set(file_names)
+        has_project_file = bool(PROJECT_FILENAMES & names) or any(name.startswith("Dockerfile.") for name in names)
+        if has_project_file and current_path not in seen:
+            discovered.append(current_path)
+            seen.add(current_path)
+    if root not in seen:
+        discovered.insert(0, root)
+    return discovered
 
 
 def parse_java_version_file(root: Path, hints: list[dict[str, str]]) -> None:
@@ -125,27 +176,45 @@ def parse_dockerfile(root: Path, hints: list[dict[str, str]]) -> None:
         if not path.is_file():
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        for match in re.finditer(r"FROM\s+\S+:(\S+)", text, flags=re.IGNORECASE):
-            tag = match.group(1)
+        for match in re.finditer(r"^\s*FROM\s+(?:--platform=\S+\s+)?(\S+)", text, flags=re.IGNORECASE | re.MULTILINE):
+            image_ref = match.group(1).split("@", 1)[0]
             for pattern in JAVA_TAG_PATTERNS:
-                tag_match = re.search(pattern, tag, flags=re.IGNORECASE)
+                tag_match = re.search(pattern, image_ref, flags=re.IGNORECASE)
                 if tag_match:
                     add_hint(hints, path, "docker-base-image", tag_match.group(1))
                     break
 
 
+def numeric_hint_versions(hints: list[dict[str, str]], tokens: tuple[str, ...] | None = None) -> list[int]:
+    versions: list[int] = []
+    for hint in hints:
+        if tokens and not any(token in hint["kind"].lower() for token in tokens):
+            continue
+        if re.fullmatch(r"\d+", hint["value"]):
+            versions.append(int(hint["value"]))
+    return sorted(set(versions))
+
+
 def infer_project_info(root: Path) -> dict[str, Any]:
     root = root.resolve()
     hints: list[dict[str, str]] = []
-    parse_java_version_file(root, hints)
-    parse_maven(root, hints)
-    parse_gradle(root, hints)
-    parse_dockerfile(root, hints)
-    versions = sorted({hint["value"] for hint in hints if re.fullmatch(r"\d+", hint["value"])}, key=int)
+    for project_dir in discover_project_dirs(root):
+        parse_java_version_file(project_dir, hints)
+        parse_maven(project_dir, hints)
+        parse_gradle(project_dir, hints)
+        parse_dockerfile(project_dir, hints)
+    numeric_versions = numeric_hint_versions(hints)
+    compile_versions = numeric_hint_versions(hints, COMPILE_HINT_TOKENS)
+    runtime_versions = numeric_hint_versions(hints, RUNTIME_HINT_TOKENS)
+    language_version = str(min(compile_versions)) if compile_versions else (str(max(numeric_versions)) if numeric_versions else None)
+    runtime_version = str(max(runtime_versions)) if runtime_versions else None
     return {
         "root": str(root),
-        "detected_versions": versions,
-        "recommended_version": versions[-1] if versions else None,
+        "detected_versions": [str(version) for version in numeric_versions],
+        "language_version": language_version,
+        "runtime_version": runtime_version,
+        "highest_detected_version": str(max(numeric_versions)) if numeric_versions else None,
+        "recommended_version": language_version,
         "hints": hints,
     }
 

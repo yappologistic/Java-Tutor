@@ -193,7 +193,11 @@ def find_area(query: str, version: str = DEFAULT_VERSION) -> JvmOptionArea:
     index = area_index(version)
     if normalized in index:
         return index[normalized]
-    matches = [area for key, area in index.items() if normalized in key or key in normalized]
+    matches = [
+        area
+        for key, area in index.items()
+        if len(normalized) >= 4 and len(key) >= 4 and (normalized in key or key in normalized)
+    ]
     unique_matches = list(dict.fromkeys(matches))
     if len(unique_matches) == 1:
         return unique_matches[0]

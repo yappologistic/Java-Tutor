@@ -43,7 +43,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 One-line install from GitHub for the current user on Windows:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p
 ```
 
 One-line install from GitHub for the current user on Linux and macOS:
@@ -55,7 +55,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line update:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Update
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Update
 ```
 
 ```bash
@@ -65,7 +65,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line status:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Status
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Status
 ```
 
 ```bash
@@ -75,7 +75,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 One-line uninstall:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Uninstall
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Uninstall
 ```
 
 ```bash
@@ -91,7 +91,7 @@ Install for the current user:
 On macOS/Linux:
 
 ```bash
-./install.sh
+bash ./install.sh
 ```
 
 Update after pulling new changes:
@@ -101,7 +101,7 @@ Update after pulling new changes:
 ```
 
 ```bash
-./install.sh update
+bash ./install.sh update
 ```
 
 Uninstall:
@@ -111,7 +111,7 @@ Uninstall:
 ```
 
 ```bash
-./install.sh uninstall
+bash ./install.sh uninstall
 ```
 
 Status:
@@ -121,7 +121,7 @@ Status:
 ```
 
 ```bash
-./install.sh status
+bash ./install.sh status
 ```
 
 Status reports the install path and, for installs made with the current installer, the install timestamp and source.
@@ -135,13 +135,13 @@ Install globally for all users on the machine:
 Linux:
 
 ```bash
-sudo ./install.sh --global
+sudo bash ./install.sh --global
 ```
 
 macOS:
 
 ```bash
-sudo ./install.sh --global
+sudo bash ./install.sh --global
 ```
 
 The global location defaults to `C:\ProgramData\Codex\skills\java-tutor` on Windows, `/usr/local/share/codex/skills/java-tutor` on Linux, and `/Library/Application Support/Codex/skills/java-tutor` on macOS. Set `CODEX_GLOBAL_HOME` before running the installer if your Codex setup uses a different global skill directory.
@@ -192,7 +192,7 @@ python .\scripts\verify_project.py --check-links
 Run the lower-level validation and script tests:
 
 ```powershell
-python C:\Users\LENOVO\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\java-tutor
+python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" .\java-tutor
 python -m unittest discover -s tests
 ```
 

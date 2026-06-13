@@ -35,6 +35,10 @@ def jls_link(section: str, version: str) -> str:
     return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/{section}"
 
 
+def java_doc(path: str, version: str) -> str:
+    return f"https://docs.oracle.com/en/java/javase/{version}/{path}"
+
+
 def areas(version: str = DEFAULT_VERSION) -> tuple[ReviewArea, ...]:
     collection_docs = api_link("java.base/java/util/Collection.html", version)
     optional_docs = api_link("java.base/java/util/Optional.html", version)
@@ -109,7 +113,7 @@ def areas(version: str = DEFAULT_VERSION) -> tuple[ReviewArea, ...]:
                     why="Secure Java code still depends on disciplined input handling around untrusted data.",
                     docs=(
                         "https://www.oracle.com/java/technologies/javase/seccodeguide.html",
-                        "https://docs.oracle.com/en/java/javase/25/security/index.html",
+                        java_doc("security/index.html", version),
                     ),
                 ),
                 ReviewItem(
@@ -121,8 +125,8 @@ def areas(version: str = DEFAULT_VERSION) -> tuple[ReviewArea, ...]:
                     check="Check dependency, provider, crypto, TLS, and permissions assumptions against the deployed JDK and runtime environment.",
                     why="Security behavior can depend on JDK version, provider configuration, disabled algorithms, and deployment policy.",
                     docs=(
-                        "https://docs.oracle.com/en/java/javase/25/security/java-security-overview1.html",
-                        "https://docs.oracle.com/en/java/javase/25/security/index.html",
+                        java_doc("security/java-security-overview1.html", version),
+                        java_doc("security/index.html", version),
                     ),
                 ),
             ),
@@ -135,7 +139,7 @@ def areas(version: str = DEFAULT_VERSION) -> tuple[ReviewArea, ...]:
                     check="Check source, target, and runtime Java versions before recommending newer APIs, language features, or library upgrades.",
                     why="A correct patch can still break builds or deployments when it exceeds the configured Java baseline.",
                     docs=(
-                        "https://docs.oracle.com/en/java/javase/25/migrate/index.html",
+                        java_doc("migrate/index.html", version),
                         "https://docs.oracle.com/en/java/javase/",
                     ),
                 ),

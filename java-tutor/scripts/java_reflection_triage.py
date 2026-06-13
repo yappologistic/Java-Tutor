@@ -11,7 +11,6 @@ from typing import Iterable
 
 
 DEFAULT_VERSION = "25"
-JLS_BASE = "https://docs.oracle.com/javase/specs/jls/se25/html"
 
 
 @dataclass(frozen=True)
@@ -29,9 +28,9 @@ def api(path: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/{path}"
 
 
-def jls(chapter: str, anchor: str | None = None) -> str:
+def jls(chapter: str, anchor: str | None = None, version: str = DEFAULT_VERSION) -> str:
     suffix = f"#{anchor}" if anchor else ""
-    return f"{JLS_BASE}/jls-{chapter}.html{suffix}"
+    return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/jls-{chapter}.html{suffix}"
 
 
 def issues(version: str = DEFAULT_VERSION) -> tuple[ReflectionIssue, ...]:
@@ -98,7 +97,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ReflectionIssue, ...]:
                 "Assuming @Inherited applies to methods, fields, interfaces, or type-use annotations.",
                 "Reading only one annotation when a repeatable annotation container is involved.",
             ),
-            docs=(annotation, annotated_element, retention, retention_policy, target, jls("9", "jls-9.6")),
+            docs=(annotation, annotated_element, retention, retention_policy, target, jls("9", "jls-9.6", version)),
         ),
         ReflectionIssue(
             key="modules-opens",
@@ -119,7 +118,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ReflectionIssue, ...]:
                 "Adding broad opens to every package instead of scoping reflective access.",
                 "Depending on JDK internals that are strongly encapsulated or unsupported.",
             ),
-            docs=(module, accessible, jls("7", "jls-7.7.2"), jls("7", "jls-7.7.3")),
+            docs=(module, accessible, jls("7", "jls-7.7.2", version), jls("7", "jls-7.7.3", version)),
         ),
         ReflectionIssue(
             key="generic-types",
@@ -140,7 +139,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ReflectionIssue, ...]:
                 "Casting every Type to ParameterizedType without checking its actual subtype.",
                 "Ignoring bridge methods when reflecting over generic overrides.",
             ),
-            docs=(parameterized_type, class_api, method, jls("4", "jls-4.6")),
+            docs=(parameterized_type, class_api, method, jls("4", "jls-4.6", version)),
         ),
         ReflectionIssue(
             key="dynamic-proxy",
@@ -203,7 +202,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ReflectionIssue, ...]:
                 "Reading fields only and missing component-level annotations.",
                 "Expecting frameworks that require no-arg constructors or setters to work unchanged with records.",
             ),
-            docs=(record_api, record_component, class_api, jls("8", "jls-8.10")),
+            docs=(record_api, record_component, class_api, jls("8", "jls-8.10", version)),
         ),
     )
 

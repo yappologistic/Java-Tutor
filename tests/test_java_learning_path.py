@@ -36,6 +36,11 @@ class JavaLearningPathTests(unittest.TestCase):
                 or url.startswith("https://openjdk.org/")
             )
 
+    def test_professional_jls_index_honors_requested_version(self):
+        urls = official_urls(build_path("professional", "spec", version="21"))
+        self.assertIn("https://docs.oracle.com/javase/specs/jls/se21/html/index.html", urls)
+        self.assertFalse(any("/jls/se25/" in url for url in urls), urls)
+
 
 if __name__ == "__main__":
     unittest.main()

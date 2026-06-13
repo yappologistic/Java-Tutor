@@ -1,6 +1,13 @@
 import unittest
 
-from verify_project_script import OFFICIAL_URLS, RELEASE_FACT_CHECKS, checked_url_status, normalize_text, parse_frontmatter
+from verify_project_script import (
+    OFFICIAL_URLS,
+    RELEASE_FACT_CHECKS,
+    checked_url_status,
+    normalize_text,
+    parse_frontmatter,
+    topic_urls,
+)
 
 
 class FakeResponse:
@@ -47,10 +54,16 @@ class VerifyProjectTests(unittest.TestCase):
         allowed_hosts = (
             "https://docs.oracle.com/",
             "https://www.oracle.com/",
+            "https://openjdk.org/",
         )
         for check in RELEASE_FACT_CHECKS:
             self.assertTrue(check["url"].startswith(allowed_hosts), check["url"])
             self.assertTrue(check["required"], check["name"])
+
+    def test_topic_urls_are_resolved_before_link_checking(self):
+        urls = list(topic_urls())
+        self.assertTrue(urls)
+        self.assertFalse(any("{version}" in url for url in urls), urls)
 
     def test_checked_url_status_retries_transient_timeout(self):
         opener = FlakyOpener()

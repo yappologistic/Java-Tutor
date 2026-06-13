@@ -35,6 +35,12 @@ class JavaCodeReviewChecklistTests(unittest.TestCase):
         self.assertIn("Official docs:", text)
         self.assertIn("AutoCloseable", text)
 
+    def test_security_and_migration_docs_honor_requested_version(self):
+        urls = official_urls(select_areas(["security", "compatibility"], version="21"))
+        self.assertTrue(any("/java/javase/21/security/" in url for url in urls), urls)
+        self.assertIn("https://docs.oracle.com/en/java/javase/21/migrate/index.html", urls)
+        self.assertFalse(any("/java/javase/25/security/" in url or "/java/javase/25/migrate/" in url for url in urls))
+
 
 if __name__ == "__main__":
     unittest.main()

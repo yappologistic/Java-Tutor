@@ -11,6 +11,7 @@ DEFAULT_VERSION = "25"
 
 MODULE_PREFIXES = {
     "java.applet.": "java.desktop",
+    "java.awt.datatransfer.": "java.datatransfer",
     "java.awt.": "java.desktop",
     "java.beans.": "java.desktop",
     "java.datatransfer.": "java.datatransfer",
@@ -29,8 +30,11 @@ MODULE_PREFIXES = {
     "java.xml.crypto.": "java.xml.crypto",
     "java.xml.": "java.xml",
     "java.": "java.base",
+    "javax.annotation.processing.": "java.compiler",
+    "javax.lang.model.": "java.compiler",
     "javax.crypto.": "java.base",
     "javax.net.": "java.base",
+    "javax.security.auth.kerberos.": "java.security.jgss",
     "javax.security.": "java.base",
     "javax.sql.": "java.sql",
     "javax.xml.": "java.xml",
@@ -40,10 +44,24 @@ MODULE_PREFIXES = {
 
 
 def infer_module(symbol: str) -> str:
-    for prefix, module in MODULE_PREFIXES.items():
+    for prefix, module in sorted(MODULE_PREFIXES.items(), key=lambda item: len(item[0]), reverse=True):
         if symbol.startswith(prefix):
             return module
     return "java.base"
+
+
+def api_path(class_name: str) -> str:
+    parts = class_name.split(".")
+    package_parts: list[str] = []
+    class_parts: list[str] = []
+    for part in parts:
+        if class_parts or (part and part[0].isupper()):
+            class_parts.append(part)
+        else:
+            package_parts.append(part)
+    if not class_parts:
+        return class_name.replace(".", "/")
+    return "/".join([*package_parts, ".".join(class_parts)])
 
 
 def api_link(symbol: str, version: str) -> str:
@@ -55,7 +73,7 @@ def api_link(symbol: str, version: str) -> str:
 
     class_name, separator, member = cleaned.partition("#")
     module = infer_module(class_name)
-    path = class_name.replace(".", "/")
+    path = api_path(class_name)
     link = f"https://docs.oracle.com/en/java/javase/{version}/docs/api/{module}/{path}.html"
     if separator:
         link += f"#{member}"

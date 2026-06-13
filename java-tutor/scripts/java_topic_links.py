@@ -27,8 +27,8 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="16",
         links=(
             "https://openjdk.org/jeps/395",
-            "https://docs.oracle.com/en/java/javase/25/language/records.html",
-            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Record.html",
+            "https://docs.oracle.com/en/java/javase/{version}/language/records.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/lang/Record.html",
         ),
         aliases=("record", "data carrier", "data class"),
     ),
@@ -39,7 +39,7 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="17",
         links=(
             "https://openjdk.org/jeps/409",
-            "https://docs.oracle.com/en/java/javase/25/language/sealed-classes-and-interfaces.html",
+            "https://docs.oracle.com/en/java/javase/{version}/language/sealed-classes-and-interfaces.html",
         ),
         aliases=("sealed", "permits", "sealed interfaces"),
     ),
@@ -50,10 +50,23 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="21",
         links=(
             "https://openjdk.org/jeps/444",
-            "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
-            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html",
+            "https://docs.oracle.com/en/java/javase/{version}/core/virtual-threads.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/lang/Thread.html",
         ),
         aliases=("virtual thread", "loom", "lightweight threads"),
+    ),
+    Topic(
+        key="sequenced-collections",
+        title="Sequenced collections",
+        status="Final API",
+        minimum_version="21",
+        links=(
+            "https://openjdk.org/jeps/431",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/util/SequencedCollection.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/util/SequencedSet.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/util/SequencedMap.html",
+        ),
+        aliases=("sequenced collection", "sequenced set", "sequenced map", "reversed collection"),
     ),
     Topic(
         key="pattern-switch",
@@ -62,7 +75,7 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="21",
         links=(
             "https://openjdk.org/jeps/441",
-            "https://docs.oracle.com/en/java/javase/25/language/pattern-matching-switch.html",
+            "https://docs.oracle.com/en/java/javase/{version}/language/pattern-matching-switch.html",
         ),
         aliases=("switch patterns", "pattern matching switch", "type patterns switch"),
     ),
@@ -73,7 +86,7 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="14",
         links=(
             "https://openjdk.org/jeps/361",
-            "https://docs.oracle.com/en/java/javase/25/language/switch-expressions-and-statements.html",
+            "https://docs.oracle.com/en/java/javase/{version}/language/switch-expressions-and-statements.html",
         ),
         aliases=("switch expression", "yield"),
     ),
@@ -84,7 +97,7 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="15",
         links=(
             "https://openjdk.org/jeps/378",
-            "https://docs.oracle.com/en/java/javase/25/text-blocks/index.html",
+            "https://docs.oracle.com/en/java/javase/{version}/text-blocks/index.html",
         ),
         aliases=("text block", "multiline strings", "multi-line strings"),
     ),
@@ -94,7 +107,7 @@ TOPICS: tuple[Topic, ...] = (
         status="Final API",
         minimum_version="8",
         links=(
-            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/stream/package-summary.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/util/stream/package-summary.html",
             "https://docs.oracle.com/javase/tutorial/collections/streams/",
         ),
         aliases=("stream", "stream api", "java streams"),
@@ -105,7 +118,7 @@ TOPICS: tuple[Topic, ...] = (
         status="Final API",
         minimum_version="8",
         links=(
-            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/java/util/Optional.html",
         ),
         aliases=("java optional", "nullable", "null optional"),
     ),
@@ -116,8 +129,8 @@ TOPICS: tuple[Topic, ...] = (
         minimum_version="9",
         links=(
             "https://openjdk.org/jeps/261",
-            "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/module-summary.html",
-            "https://docs.oracle.com/en/java/javase/25/docs/specs/man/java.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/module-summary.html",
+            "https://docs.oracle.com/en/java/javase/{version}/docs/specs/man/java.html",
         ),
         aliases=("jpms", "module system", "jigsaw"),
     ),
@@ -154,13 +167,25 @@ def find_topic(query: str) -> Topic:
     raise ValueError(f"unknown topic {query!r}; available topics: {available}")
 
 
-def render_text(topic: Topic) -> str:
-    links = "\n".join(f"- {link}" for link in topic.links)
+def links_for(topic: Topic, version: str) -> tuple[str, ...]:
+    return tuple(link.format(version=version) for link in topic.links)
+
+
+def payload_for(topic: Topic, version: str) -> dict[str, object]:
+    payload = asdict(topic)
+    payload["version"] = version
+    payload["links"] = list(links_for(topic, version))
+    return payload
+
+
+def render_text(topic: Topic, version: str = "25") -> str:
+    links = "\n".join(f"- {link}" for link in links_for(topic, version))
     return (
         f"{topic.title}\n"
         f"Key: {topic.key}\n"
         f"Status: {topic.status}\n"
         f"Minimum Java version: {topic.minimum_version}\n"
+        f"Documentation version: {version}\n"
         f"Official docs:\n{links}"
     )
 
@@ -169,6 +194,7 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("topic", nargs="?", help="Topic key or alias")
     parser.add_argument("--list", action="store_true", help="List known topic keys")
+    parser.add_argument("--version", default="25", help="Java SE documentation version")
     parser.add_argument("--json", action="store_true", help="Print JSON")
     args = parser.parse_args(argv)
 
@@ -184,7 +210,7 @@ def main(argv: list[str]) -> int:
         topic = find_topic(args.topic)
     except ValueError as exc:
         parser.error(str(exc))
-    print(json.dumps(asdict(topic), indent=2) if args.json else render_text(topic))
+    print(json.dumps(payload_for(topic, args.version), indent=2) if args.json else render_text(topic, args.version))
     return 0
 
 

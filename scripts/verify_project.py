@@ -7,6 +7,7 @@ import argparse
 import html
 import os
 import re
+import shlex
 import shutil
 import socket
 import subprocess
@@ -265,6 +266,11 @@ RELEASE_FACT_CHECKS = [
         "required": ["Current Java SE Versions", "JDK 26", "JDK 25", "JDK 21", "JDK 17", "JDK 11", "JDK 8"],
     },
     {
+        "name": "OpenJDK JDK 25 General Availability",
+        "url": "https://openjdk.org/projects/jdk/25/",
+        "required": ["JDK 25 reached General Availability on 16 September 2025"],
+    },
+    {
         "name": "Oracle JDK 26 release notes",
         "url": "https://www.oracle.com/java/technologies/javase/26all-relnotes.html",
         "required": ["JDK 26.0.1", "April 21, 2026", "JDK 26", "March 17, 2026"],
@@ -279,7 +285,7 @@ def topic_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     for topic in java_topic_links.TOPICS:
-        yield from topic.links
+        yield from java_topic_links.links_for(topic, "25")
 
 
 def exception_urls() -> Iterable[str]:
@@ -523,9 +529,46 @@ def run(command: list[str], *, timeout: int = 30) -> None:
     subprocess.run(command, cwd=ROOT, timeout=timeout, check=True)
 
 
-def run_with_env(command: list[str], env: dict[str, str], *, timeout: int = 30) -> None:
+def run_with_env(command: list[str], env: dict[str, str], *, timeout: int = 30, cwd: Path = ROOT) -> None:
     print("+", " ".join(command))
-    subprocess.run(command, cwd=ROOT, env=env, timeout=timeout, check=True)
+    subprocess.run(command, cwd=cwd, env=env, timeout=timeout, check=True)
+
+
+def run_with_env_input(
+    command: list[str],
+    env: dict[str, str],
+    input_text: str,
+    *,
+    timeout: int = 30,
+    cwd: Path = ROOT,
+) -> None:
+    print("+", " ".join(command), "< stdin")
+    subprocess.run(command, cwd=cwd, env=env, input=input_text.encode("utf-8"), timeout=timeout, check=True)
+
+
+def bash_visible_path(shell: str, path: Path) -> str:
+    result = subprocess.run(
+        [shell, "-lc", "pwd"],
+        cwd=path if path.is_dir() else path.parent,
+        text=True,
+        capture_output=True,
+        timeout=10,
+        check=True,
+    )
+    bash_cwd = result.stdout.strip()
+    return bash_cwd if path.is_dir() else f"{bash_cwd}/{path.name}"
+
+
+def bash_env_prefix(values: dict[str, str]) -> str:
+    return " ".join(f"{key}={shlex.quote(value)}" for key, value in values.items())
+
+
+def run_bash_command(shell: str, command: str, *, cwd: Path, timeout: int = 30) -> None:
+    run_with_env([shell, "-lc", command], os.environ.copy(), timeout=timeout, cwd=cwd)
+
+
+def run_bash_command_input(shell: str, command: str, input_text: str, *, cwd: Path, timeout: int = 30) -> None:
+    run_with_env_input([shell, "-lc", command], os.environ.copy(), input_text, timeout=timeout, cwd=cwd)
 
 
 def normalize_text(text: str) -> str:
@@ -592,70 +635,125 @@ def check_docs() -> None:
 
 
 def check_shell_syntax() -> None:
-    shell = os.environ.get("SHELLCHECK_SH", "sh")
+    shell = os.environ.get("SHELLCHECK_SH") or shutil.which("bash") or "sh"
     try:
         run([shell, "-n", "./install.sh"])
     except FileNotFoundError:
-        print("Skipping install.sh syntax check: sh is not available")
+        print("Skipping install.sh syntax check: bash/sh is not available")
 
 
 def check_installers() -> None:
     with tempfile.TemporaryDirectory(prefix="java-tutor-verify-") as temp_dir:
-        temp_home = Path(temp_dir) / "codex-home"
-        skill_file = temp_home / "skills" / "java-tutor" / "SKILL.md"
-        metadata_file = temp_home / "skills" / "java-tutor" / ".install-info"
-        env = os.environ.copy()
-        env["CODEX_HOME"] = str(temp_home)
+        temp_path = Path(temp_dir)
+        archive_zip = create_archive_fixture(temp_path, "zip")
+        archive_tgz = create_archive_fixture(temp_path, "gztar")
 
-        if os.name == "nt":
-            powershell = shutil.which("powershell") or shutil.which("pwsh")
-            if not powershell:
-                print("Skipping install.ps1 smoke test: PowerShell is not available")
-                return
-            run_with_env(
-                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Status"],
-                env,
+        powershell = shutil.which("powershell") or shutil.which("pwsh")
+        if powershell:
+            check_powershell_installer(powershell, temp_path / "ps-local-home", ROOT / "install.ps1")
+            remote_dir = temp_path / "ps-archive-script"
+            remote_dir.mkdir()
+            remote_script = remote_dir / "install.ps1"
+            shutil.copy2(ROOT / "install.ps1", remote_script)
+            check_powershell_installer(
+                powershell,
+                temp_path / "ps-archive-home",
+                remote_script,
+                archive_url=str(archive_zip),
             )
-            run_with_env([powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1"], env)
-            if not skill_file.is_file():
-                raise AssertionError("install.ps1 did not install SKILL.md")
-            if not metadata_file.is_file():
-                raise AssertionError("install.ps1 did not write install metadata")
-            run_with_env(
-                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Status"],
-                env,
-            )
-            run_with_env(
-                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Update"],
-                env,
-            )
-            if not skill_file.is_file():
-                raise AssertionError("install.ps1 update removed SKILL.md")
-            run_with_env(
-                [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", ".\\install.ps1", "-Action", "Uninstall"],
-                env,
-            )
-            if skill_file.exists():
-                raise AssertionError("install.ps1 uninstall left SKILL.md behind")
-            return
+        else:
+            print("Skipping install.ps1 smoke test: PowerShell is not available")
 
-        shell = shutil.which("bash") or shutil.which("sh")
-        if not shell:
-            print("Skipping install.sh smoke test: sh/bash is not available")
-            return
-        run_with_env([shell, "./install.sh", "status"], env)
-        run_with_env([shell, "./install.sh"], env)
-        if not skill_file.is_file():
-            raise AssertionError("install.sh did not install SKILL.md")
-        if not metadata_file.is_file():
-            raise AssertionError("install.sh did not write install metadata")
-        run_with_env([shell, "./install.sh", "status"], env)
-        run_with_env([shell, "./install.sh", "update"], env)
-        if not skill_file.is_file():
-            raise AssertionError("install.sh update removed SKILL.md")
-        run_with_env([shell, "./install.sh", "uninstall"], env)
-        if skill_file.exists():
-            raise AssertionError("install.sh uninstall left SKILL.md behind")
+        shell = shutil.which("bash")
+        if shell:
+            check_shell_installer(shell, temp_path / "sh-local-home", ROOT / "install.sh")
+            remote_dir = temp_path / "sh-archive-script"
+            remote_dir.mkdir()
+            remote_script = remote_dir / "install.sh"
+            shutil.copy2(ROOT / "install.sh", remote_script)
+            check_shell_installer(shell, temp_path / "sh-archive-home", remote_script, archive_url=str(archive_tgz))
+            check_shell_stream_installer(shell, temp_path / "sh-stream-home", archive_url=str(archive_tgz))
+        else:
+            print("Skipping install.sh smoke test: bash is not available")
+
+
+def create_archive_fixture(temp_path: Path, format_name: str) -> Path:
+    archive_parent = temp_path / f"archive-{format_name}"
+    fixture_root = archive_parent / "Java-Tutor-main"
+    shutil.copytree(SKILL_DIR, fixture_root / "java-tutor")
+    shutil.copy2(ROOT / "LICENSE", fixture_root / "LICENSE")
+    archive_base = temp_path / f"java-tutor-fixture-{format_name}"
+    return Path(shutil.make_archive(str(archive_base), format_name, root_dir=archive_parent, base_dir="Java-Tutor-main"))
+
+
+def assert_installed_payload(home: Path, installer_name: str) -> None:
+    target = home / "skills" / "java-tutor"
+    if not (target / "SKILL.md").is_file():
+        raise AssertionError(f"{installer_name} did not install SKILL.md")
+    if not (target / ".install-info").is_file():
+        raise AssertionError(f"{installer_name} did not write install metadata")
+    if not (target / "LICENSE").is_file():
+        raise AssertionError(f"{installer_name} did not install LICENSE")
+
+
+def check_powershell_installer(
+    powershell: str,
+    home: Path,
+    script: Path,
+    *,
+    archive_url: str | None = None,
+) -> None:
+    env = os.environ.copy()
+    env["CODEX_HOME"] = str(home)
+    if archive_url:
+        env["JAVA_TUTOR_ARCHIVE_URL"] = archive_url
+    command_base = [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)]
+    run_with_env([*command_base, "-Action", "Status"], env)
+    run_with_env(command_base, env)
+    assert_installed_payload(home, "install.ps1")
+    run_with_env([*command_base, "-Action", "Status"], env)
+    run_with_env([*command_base, "-Action", "Update"], env)
+    assert_installed_payload(home, "install.ps1 update")
+    run_with_env([*command_base, "-Action", "Uninstall"], env)
+    if (home / "skills" / "java-tutor" / "SKILL.md").exists():
+        raise AssertionError("install.ps1 uninstall left SKILL.md behind")
+
+
+def check_shell_installer(shell: str, home: Path, script: Path, *, archive_url: str | None = None) -> None:
+    env_values = {"CODEX_HOME": bash_visible_path(shell, home)}
+    if archive_url:
+        env_values["JAVA_TUTOR_ARCHIVE_URL"] = (
+            bash_visible_path(shell, Path(archive_url)) if Path(archive_url).exists() else archive_url
+        )
+    prefix = bash_env_prefix(env_values)
+    script_arg = f"./{script.name}"
+    quoted_script = shlex.quote(script_arg)
+    run_bash_command(shell, f"{prefix} bash {quoted_script} status", cwd=script.parent)
+    run_bash_command(shell, f"{prefix} bash {quoted_script}", cwd=script.parent)
+    assert_installed_payload(home, "install.sh")
+    run_bash_command(shell, f"{prefix} bash {quoted_script} status", cwd=script.parent)
+    run_bash_command(shell, f"{prefix} bash {quoted_script} update", cwd=script.parent)
+    assert_installed_payload(home, "install.sh update")
+    run_bash_command(shell, f"{prefix} bash {quoted_script} uninstall", cwd=script.parent)
+    if (home / "skills" / "java-tutor" / "SKILL.md").exists():
+        raise AssertionError("install.sh uninstall left SKILL.md behind")
+
+
+def check_shell_stream_installer(shell: str, home: Path, *, archive_url: str) -> None:
+    env_values = {
+        "CODEX_HOME": bash_visible_path(shell, home),
+        "JAVA_TUTOR_ARCHIVE_URL": bash_visible_path(shell, Path(archive_url)) if Path(archive_url).exists() else archive_url,
+    }
+    prefix = bash_env_prefix(env_values)
+    script_text = (ROOT / "install.sh").read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    run_bash_command_input(shell, f"{prefix} bash -s -- status", script_text, cwd=ROOT)
+    run_bash_command_input(shell, f"{prefix} bash -s", script_text, cwd=ROOT)
+    assert_installed_payload(home, "streamed install.sh")
+    run_bash_command_input(shell, f"{prefix} bash -s -- update", script_text, cwd=ROOT)
+    assert_installed_payload(home, "streamed install.sh update")
+    run_bash_command_input(shell, f"{prefix} bash -s -- uninstall", script_text, cwd=ROOT)
+    if (home / "skills" / "java-tutor" / "SKILL.md").exists():
+        raise AssertionError("streamed install.sh uninstall left SKILL.md behind")
 
 
 def run_tests() -> None:

@@ -32,13 +32,15 @@ def compatibility(topic_query: str, target_version: str) -> dict[str, Any]:
     target = parse_major(target_version)
     minimum = parse_major(topic.minimum_version)
     available = target >= minimum
+    docs_version = str(target if available else minimum)
     return {
         "topic": asdict(topic),
         "target_version": str(target),
         "minimum_version": str(minimum),
+        "documentation_version": docs_version,
         "available": available,
         "recommendation": recommendation(topic, target, minimum, available),
-        "official_docs": list(topic.links),
+        "official_docs": list(java_topic_links.links_for(topic, docs_version)),
     }
 
 
@@ -50,7 +52,7 @@ def recommendation(topic: java_topic_links.Topic, target: int, minimum: int, ava
         )
     return (
         f"{topic.title} requires Java {minimum} or newer, but the target is Java {target}. "
-        "Use an older-compatible alternative or plan a version upgrade first."
+        f"Use an older-compatible alternative or plan a version upgrade first; linked API docs use Java {minimum}."
     )
 
 
@@ -63,6 +65,7 @@ def render_text(result: dict[str, Any]) -> str:
         f"Status: {topic['status']}\n"
         f"Target Java version: {result['target_version']}\n"
         f"Minimum Java version: {result['minimum_version']}\n"
+        f"Documentation version: {result['documentation_version']}\n"
         f"Compatibility: {status}\n"
         f"Recommendation: {result['recommendation']}\n"
         f"Official docs:\n{links}"

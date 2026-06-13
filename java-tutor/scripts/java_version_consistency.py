@@ -13,9 +13,10 @@ from typing import Any, Iterable
 import java_project_info
 
 
-OFFICIAL_DOCS = (
-    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
-    "https://docs.oracle.com/en/java/javase/25/migrate/index.html",
+DEFAULT_VERSION = "25"
+OFFICIAL_DOC_TEMPLATES = (
+    "https://docs.oracle.com/en/java/javase/{version}/docs/specs/man/javac.html",
+    "https://docs.oracle.com/en/java/javase/{version}/migrate/index.html",
     "https://docs.oracle.com/en/java/javase/",
 )
 
@@ -61,7 +62,17 @@ def classify_hints(hints: list[dict[str, Any]], tokens: Iterable[str]) -> list[d
     return [hint for hint in hints if has_token(hint["kind"], tokens)]
 
 
-def build_issue(code: str, severity: str, summary: str, action: str, docs: tuple[str, ...] = OFFICIAL_DOCS) -> dict[str, Any]:
+def official_docs(version: str = DEFAULT_VERSION) -> tuple[str, ...]:
+    return tuple(doc.format(version=version) for doc in OFFICIAL_DOC_TEMPLATES)
+
+
+def build_issue(
+    code: str,
+    severity: str,
+    summary: str,
+    action: str,
+    docs: tuple[str, ...],
+) -> dict[str, Any]:
     return {
         "code": code,
         "severity": severity,
@@ -77,6 +88,8 @@ def analyze(root: Path) -> dict[str, Any]:
     versions = sorted({hint["major"] for hint in hints})
     compile_hints = classify_hints(hints, COMPILE_HINT_TOKENS)
     runtime_hints = classify_hints(hints, RUNTIME_HINT_TOKENS)
+    doc_version = info.get("language_version") or info.get("recommended_version") or DEFAULT_VERSION
+    docs = official_docs(str(doc_version))
     issues: list[dict[str, Any]] = []
 
     if not hints:
@@ -86,6 +99,7 @@ def analyze(root: Path) -> dict[str, Any]:
                 "info",
                 "No numeric Java version hints were found in common project files.",
                 "Inspect build files, CI, containers, and local toolchains before making version-specific recommendations.",
+                docs,
             )
         )
     elif len(versions) > 1:
@@ -95,6 +109,7 @@ def analyze(root: Path) -> dict[str, Any]:
                 "warning",
                 f"Multiple Java versions were detected: {', '.join(str(version) for version in versions)}.",
                 "Confirm which value controls source compatibility, bytecode target, test runtime, production runtime, and local toolchain.",
+                docs,
             )
         )
 
@@ -107,10 +122,11 @@ def analyze(root: Path) -> dict[str, Any]:
                 "info",
                 f"Runtime/toolchain hints go up to Java {max(runtime_versions)}, while compile hints include Java {min(compile_versions)}.",
                 "Do not recommend APIs newer than the compile release/source level unless the build baseline is intentionally raised.",
+                docs,
             )
         )
 
-    recommended = max(versions) if versions else None
+    recommended = int(doc_version) if str(doc_version).isdigit() else None
     if recommended is not None and recommended <= 8:
         issues.append(
             build_issue(
@@ -118,18 +134,22 @@ def analyze(root: Path) -> dict[str, Any]:
                 "info",
                 f"The highest detected Java baseline is {recommended}.",
                 "Avoid Java 9+ APIs and language features unless the project is being migrated.",
+                docs,
             )
         )
 
     return {
         "root": info["root"],
         "detected_versions": [str(version) for version in versions],
-        "recommended_version": str(recommended) if recommended is not None else None,
+        "language_version": info.get("language_version"),
+        "runtime_version": info.get("runtime_version"),
+        "highest_detected_version": info.get("highest_detected_version"),
+        "recommended_version": str(doc_version) if doc_version else None,
         "compile_hint_versions": [str(version) for version in compile_versions],
         "runtime_hint_versions": [str(version) for version in runtime_versions],
         "hints": info["hints"],
         "issues": issues,
-        "official_docs": list(OFFICIAL_DOCS),
+        "official_docs": list(docs),
     }
 
 
@@ -160,7 +180,7 @@ def render_text(result: dict[str, Any]) -> str:
 
 
 def official_urls() -> tuple[str, ...]:
-    return OFFICIAL_DOCS
+    return official_docs(DEFAULT_VERSION)
 
 
 def main(argv: list[str]) -> int:

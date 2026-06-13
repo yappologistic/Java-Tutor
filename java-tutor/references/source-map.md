@@ -6,7 +6,7 @@ Use this file to choose official documentation sources. Verify current release f
 
 Last checked: 2026-06-13.
 
-The project verifier's `--check-links` mode checks these release facts against official Oracle pages.
+The project verifier's `--check-links` mode checks these release facts against official Oracle and OpenJDK pages.
 
 Official sources show:
 
@@ -27,9 +27,9 @@ Official sources show:
 | JDK release notes index | `https://www.oracle.com/java/technologies/javase/jdk-relnotes-index.html` |
 | JDK 26 release notes | `https://www.oracle.com/java/technologies/javase/26all-relnotes.html` |
 | Secure Java coding | `https://www.oracle.com/java/technologies/javase/seccodeguide.html` |
-| Java SE security guide | `https://docs.oracle.com/en/java/javase/25/security/index.html` |
-| Java language rules | `https://docs.oracle.com/javase/specs/jls/se25/html/index.html` or matching version |
-| JVM rules | `https://docs.oracle.com/javase/specs/jvms/se25/html/index.html` or matching version |
+| Java SE security guide | `https://docs.oracle.com/en/java/javase/N/security/index.html` |
+| Java language rules | `https://docs.oracle.com/javase/specs/jls/seN/html/index.html` |
+| JVM rules | `https://docs.oracle.com/javase/specs/jvms/seN/html/index.html` |
 | Java SE specifications index | `https://docs.oracle.com/javase/specs/` |
 | JEP index | `https://openjdk.org/jeps/0` |
 | Specific JEP | `https://openjdk.org/jeps/<number>` |
@@ -77,7 +77,7 @@ Replace `N` with the selected version:
 - Java launcher: `https://docs.oracle.com/en/java/javase/N/docs/specs/man/java.html`
 - JShell: `https://docs.oracle.com/en/java/javase/N/jshell/`
 
-For common Java topics, prefer `scripts/java_topic_links.py <topic>` to get curated official links plus minimum Java version and feature status.
+For common Java topics, prefer `scripts/java_topic_links.py <topic> --version N` to get curated official links plus minimum Java version and feature status.
 
 ## Accuracy Checklist
 

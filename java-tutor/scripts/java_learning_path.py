@@ -151,7 +151,7 @@ def paths(version: str = DEFAULT_VERSION) -> tuple[LearningPath, ...]:
                     practice="Explain one confusing overload, initialization, or generic inference case using the exact JLS section.",
                     tags=("language", "spec", "api-design"),
                     docs=(
-                        "https://docs.oracle.com/javase/specs/jls/se25/html/index.html",
+                        jls_link("index.html", version),
                         jls_link("jls-12.html", version),
                         jls_link("jls-15.html", version),
                     ),

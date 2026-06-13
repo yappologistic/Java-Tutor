@@ -32,6 +32,10 @@ def tutorial(path: str) -> str:
     return f"https://docs.oracle.com/javase/tutorial/{path}"
 
 
+def jls(section: str, version: str = DEFAULT_VERSION) -> str:
+    return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/{section}"
+
+
 def issues(version: str = DEFAULT_VERSION) -> tuple[IoIssue, ...]:
     path_api = api("java/nio/file/Path.html", version)
     files_api = api("java/nio/file/Files.html", version)
@@ -131,7 +135,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[IoIssue, ...]:
                 "Closing a resource too early and returning a lazy stream or reader backed by it.",
                 "Ignoring suppressed exceptions that explain cleanup failures.",
             ),
-            docs=(autocloseable, "https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3", files_api),
+            docs=(autocloseable, jls("jls-14.html#jls-14.20.3", version), files_api),
         ),
         IoIssue(
             key="serialization",

@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source_dir="$repo_root/java-tutor"
-repo_url="https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.tar.gz"
+script_path="${BASH_SOURCE[0]:-}"
+if [[ -n "$script_path" && -f "$script_path" ]]; then
+  repo_root="$(cd "$(dirname "$script_path")" && pwd)"
+else
+  repo_root=""
+fi
+source_dir="${repo_root:+$repo_root/java-tutor}"
+repo_url="${JAVA_TUTOR_ARCHIVE_URL:-https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.tar.gz}"
 scope="user"
 action="install"
 temp_root=""
 source_kind="local"
+tmp_target=""
+backup_target=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -79,14 +86,19 @@ cleanup() {
   if [[ -n "$temp_root" && -d "$temp_root" ]]; then
     rm -rf "$temp_root"
   fi
+  if [[ -n "$tmp_target" && -d "$tmp_target" ]]; then
+    rm -rf "$tmp_target"
+  fi
 }
 trap cleanup EXIT
 
-if [[ ! -d "$source_dir" ]]; then
+if [[ -z "$source_dir" || ! -d "$source_dir" ]]; then
   source_kind="archive"
   temp_root="$(mktemp -d)"
   archive="$temp_root/java-tutor.tar.gz"
-  if command -v curl >/dev/null 2>&1; then
+  if [[ -f "$repo_url" ]]; then
+    cp "$repo_url" "$archive"
+  elif command -v curl >/dev/null 2>&1; then
     curl -fsSL "$repo_url" -o "$archive"
   elif command -v wget >/dev/null 2>&1; then
     wget -qO "$archive" "$repo_url"
@@ -104,8 +116,32 @@ if [[ ! -d "$source_dir" ]]; then
 fi
 
 mkdir -p "$skills_dir"
-rm -rf "$target"
-cp -R "$source_dir" "$target"
+case "$target" in
+  "$skills_dir"/java-tutor) ;;
+  *)
+    echo "Refusing to modify unexpected install target: $target" >&2
+    exit 1
+    ;;
+esac
+
+tmp_target="$(mktemp -d "$skills_dir/.java-tutor.tmp.XXXXXX")"
+rmdir "$tmp_target"
+cp -R "$source_dir" "$tmp_target"
+if [[ ! -f "$tmp_target/SKILL.md" ]]; then
+  echo "Install payload is missing SKILL.md" >&2
+  exit 1
+fi
+
+license_source=""
+if [[ -n "$repo_root" && -f "$repo_root/LICENSE" ]]; then
+  license_source="$repo_root/LICENSE"
+elif [[ "$source_kind" == "archive" && -f "$temp_root/Java-Tutor-main/LICENSE" ]]; then
+  license_source="$temp_root/Java-Tutor-main/LICENSE"
+fi
+if [[ -n "$license_source" ]]; then
+  cp "$license_source" "$tmp_target/LICENSE"
+fi
+
 if [[ "$source_kind" == "archive" ]]; then
   install_source="$repo_url"
 else
@@ -116,8 +152,26 @@ fi
   echo "scope=$scope"
   echo "installedAtUtc=$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
   echo "source=$install_source"
-} > "$target/.install-info"
-find "$target" -type d -name "__pycache__" -prune -exec rm -rf {} +
-find "$target" -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
+} > "$tmp_target/.install-info"
+find "$tmp_target" -type d -name "__pycache__" -prune -exec rm -rf {} +
+find "$tmp_target" -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
+
+if [[ -d "$target" ]]; then
+  backup_target="$skills_dir/.java-tutor.backup.$$"
+  rm -rf "$backup_target"
+  mv "$target" "$backup_target"
+fi
+
+if ! mv "$tmp_target" "$target"; then
+  if [[ -n "$backup_target" && -d "$backup_target" ]]; then
+    mv "$backup_target" "$target"
+  fi
+  echo "Failed to replace installed java-tutor skill" >&2
+  exit 1
+fi
+tmp_target=""
+if [[ -n "$backup_target" && -d "$backup_target" ]]; then
+  rm -rf "$backup_target"
+fi
 
 echo "$action completed for java-tutor ($scope scope) at $target"

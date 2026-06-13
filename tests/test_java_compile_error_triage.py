@@ -29,6 +29,11 @@ class JavaCompileErrorTriageTests(unittest.TestCase):
         for url in urls:
             self.assertTrue(url.startswith("https://docs.oracle.com/"))
 
+    def test_migration_link_honors_requested_version(self):
+        item = select("release-source-target", version="21")
+        self.assertIn("https://docs.oracle.com/en/java/javase/21/migrate/index.html", item.docs)
+        self.assertNotIn("https://docs.oracle.com/en/java/javase/25/migrate/index.html", item.docs)
+
 
 if __name__ == "__main__":
     unittest.main()

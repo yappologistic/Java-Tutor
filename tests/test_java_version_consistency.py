@@ -37,6 +37,32 @@ class JavaVersionConsistencyTests(unittest.TestCase):
             codes = [issue["code"] for issue in result["issues"]]
             self.assertIn("mixed-version-hints", codes)
             self.assertIn("runtime-newer-than-compile-baseline", codes)
+            self.assertEqual(result["recommended_version"], "11")
+            self.assertTrue(any("/java/javase/11/" in url for url in result["official_docs"]))
+
+    def test_compile_baseline_controls_docs_when_runtime_is_newer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "pom.xml").write_text(
+                textwrap.dedent(
+                    """\
+                    <project xmlns="http://maven.apache.org/POM/4.0.0">
+                      <properties>
+                        <maven.compiler.release>17</maven.compiler.release>
+                      </properties>
+                    </project>
+                    """
+                ),
+                encoding="utf-8",
+            )
+            (root / "Dockerfile").write_text("FROM eclipse-temurin:25\n", encoding="utf-8")
+            result = analyze(root)
+            self.assertEqual(result["language_version"], "17")
+            self.assertEqual(result["runtime_version"], "25")
+            self.assertEqual(result["highest_detected_version"], "25")
+            self.assertEqual(result["recommended_version"], "17")
+            self.assertTrue(any("/java/javase/17/" in url for url in result["official_docs"]))
+            self.assertFalse(any("/java/javase/25/" in url for url in result["official_docs"]))
 
     def test_legacy_baseline_is_reported(self):
         with tempfile.TemporaryDirectory() as tmp:

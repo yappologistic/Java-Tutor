@@ -14,6 +14,11 @@ class JavaJvmOptionTests(unittest.TestCase):
         self.assertEqual(area.key, "preview-features")
         self.assertTrue(any("--enable-preview" in option for option in area.option_families))
 
+    def test_short_alias_must_match_exactly(self):
+        self.assertEqual(find_area("ea").key, "assertions-properties")
+        with self.assertRaisesRegex(ValueError, "available areas"):
+            find_area("definitely-not-a-real-key")
+
     def test_unknown_area_has_available_options(self):
         with self.assertRaisesRegex(ValueError, "available areas"):
             find_area("maven surefire")

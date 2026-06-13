@@ -13,3 +13,4 @@ RELEASE_FACT_CHECKS = module.RELEASE_FACT_CHECKS
 checked_url_status = module.checked_url_status
 normalize_text = module.normalize_text
 parse_frontmatter = module.parse_frontmatter
+topic_urls = module.topic_urls

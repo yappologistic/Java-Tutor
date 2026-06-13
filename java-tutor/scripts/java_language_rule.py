@@ -27,6 +27,14 @@ def jls(path: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/{path}"
 
 
+def api(path: str, version: str = DEFAULT_VERSION) -> str:
+    return f"https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/{path}"
+
+
+def language_guide(path: str, version: str = DEFAULT_VERSION) -> str:
+    return f"https://docs.oracle.com/en/java/javase/{version}/language/{path}"
+
+
 def rules(version: str = DEFAULT_VERSION) -> tuple[LanguageRule, ...]:
     return (
         LanguageRule(
@@ -123,7 +131,7 @@ def rules(version: str = DEFAULT_VERSION) -> tuple[LanguageRule, ...]:
                 "Losing suppressed exceptions when wrapping or logging exceptions manually.",
                 "Using a resource after the try-with-resources statement has closed it.",
             ),
-            docs=(jls("jls-14.html#jls-14.20.3", version), "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/AutoCloseable.html"),
+            docs=(jls("jls-14.html#jls-14.20.3", version), api("java/lang/AutoCloseable.html", version)),
         ),
         LanguageRule(
             key="lambda-capture",
@@ -155,7 +163,7 @@ def rules(version: str = DEFAULT_VERSION) -> tuple[LanguageRule, ...]:
                 "Forgetting that component values can reference mutable objects.",
                 "Breaking API expectations by overriding generated members inconsistently.",
             ),
-            docs=(jls("jls-8.html#jls-8.10", version), "https://docs.oracle.com/en/java/javase/25/language/records.html", "https://openjdk.org/jeps/395"),
+            docs=(jls("jls-8.html#jls-8.10", version), language_guide("records.html", version), "https://openjdk.org/jeps/395"),
         ),
         LanguageRule(
             key="pattern-variables",

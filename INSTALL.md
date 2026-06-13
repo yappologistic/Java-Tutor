@@ -7,7 +7,7 @@ Install for the current user:
 Windows:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p
 ```
 
 Linux/macOS:
@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 Update:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Update
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Update
 ```
 
 ```bash
@@ -29,7 +29,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 Status:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Status
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Status
 ```
 
 ```bash
@@ -39,7 +39,7 @@ curl -fsSL https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/insta
 Uninstall:
 
 ```powershell
-$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; & $p -Action Uninstall
+$p="$env:TEMP\java-tutor-install.ps1"; iwr https://raw.githubusercontent.com/yappologistic/Java-Tutor/main/install.ps1 -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -Action Uninstall
 ```
 
 ```bash
@@ -87,7 +87,7 @@ Set `CODEX_GLOBAL_HOME` to override the global Codex home before running the ins
 Install for the current user:
 
 ```bash
-./install.sh
+bash ./install.sh
 ```
 
 The script copies `java-tutor` to `${CODEX_HOME:-$HOME/.codex}/skills/java-tutor`.
@@ -95,7 +95,7 @@ The script copies `java-tutor` to `${CODEX_HOME:-$HOME/.codex}/skills/java-tutor
 Install globally for all users:
 
 ```bash
-sudo ./install.sh --global
+sudo bash ./install.sh --global
 ```
 
 The global Unix target is:
@@ -127,7 +127,7 @@ Pull the latest repository changes and run:
 ```
 
 ```bash
-./install.sh update
+bash ./install.sh update
 ```
 
 The installer replaces the installed `java-tutor` folder.
@@ -139,7 +139,7 @@ The installer replaces the installed `java-tutor` folder.
 ```
 
 ```bash
-./install.sh uninstall
+bash ./install.sh uninstall
 ```
 
 ## Status
@@ -149,7 +149,7 @@ The installer replaces the installed `java-tutor` folder.
 ```
 
 ```bash
-./install.sh status
+bash ./install.sh status
 ```
 
 Status reports the install path and, for installs made with the current installer, the install timestamp and source.

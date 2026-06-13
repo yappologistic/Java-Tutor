@@ -27,6 +27,10 @@ def javac_doc(version: str) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/docs/specs/man/javac.html"
 
 
+def migrate_doc(version: str) -> str:
+    return f"https://docs.oracle.com/en/java/javase/{version}/migrate/index.html"
+
+
 def jls_doc(section: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/{section}"
 
@@ -119,7 +123,7 @@ def diagnostics(version: str = DEFAULT_VERSION) -> tuple[CompileErrorInfo, ...]:
                 "Prefer `--release` or the build tool's release option when compiling against a Java SE platform version.",
                 "Align Maven/Gradle toolchains, CI images, IDE JDKs, and container JDKs.",
             ),
-            docs=(javac_doc(version), "https://docs.oracle.com/en/java/javase/25/migrate/index.html"),
+            docs=(javac_doc(version), migrate_doc(version)),
         ),
     )
 

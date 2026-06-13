@@ -11,8 +11,6 @@ from typing import Iterable
 
 
 DEFAULT_VERSION = "25"
-JLS_BASE = "https://docs.oracle.com/javase/specs/jls/se25/html"
-JVMS_BASE = "https://docs.oracle.com/javase/specs/jvms/se25/html"
 
 
 @dataclass(frozen=True)
@@ -30,14 +28,14 @@ def api(path: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/{path}"
 
 
-def jls(chapter: str, anchor: str | None = None) -> str:
+def jls(chapter: str, anchor: str | None = None, version: str = DEFAULT_VERSION) -> str:
     suffix = f"#{anchor}" if anchor else ""
-    return f"{JLS_BASE}/jls-{chapter}.html{suffix}"
+    return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/jls-{chapter}.html{suffix}"
 
 
-def jvms(chapter: str, anchor: str | None = None) -> str:
+def jvms(chapter: str, anchor: str | None = None, version: str = DEFAULT_VERSION) -> str:
     suffix = f"#{anchor}" if anchor else ""
-    return f"{JVMS_BASE}/jvms-{chapter}.html{suffix}"
+    return f"https://docs.oracle.com/javase/specs/jvms/se{version}/html/jvms-{chapter}.html{suffix}"
 
 
 def issues(version: str = DEFAULT_VERSION) -> tuple[ClassLoadingIssue, ...]:
@@ -72,7 +70,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ClassLoadingIssue, ...]:
                 "Treating NoClassDefFoundError as always meaning the named class file is absent.",
                 "Ignoring earlier initialization errors that poison later class use.",
             ),
-            docs=(class_loader, class_api, jls("12", "jls-12.2"), jvms("5", "jvms-5.3")),
+            docs=(class_loader, class_api, jls("12", "jls-12.2", version), jvms("5", "jvms-5.3", version)),
         ),
         ClassLoadingIssue(
             key="resources",
@@ -135,7 +133,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ClassLoadingIssue, ...]:
                 "Using exports when reflective frameworks need opens.",
                 "Debugging only class path behavior when production launches on the module path.",
             ),
-            docs=(module, module_layer, module_finder, jls("7", "jls-7.7")),
+            docs=(module, module_layer, module_finder, jls("7", "jls-7.7", version)),
         ),
         ClassLoadingIssue(
             key="services",
@@ -198,7 +196,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[ClassLoadingIssue, ...]:
                 "Shading API classes that must be shared between host and plugin.",
                 "Hiding loader identity in logs and losing the key diagnostic clue.",
             ),
-            docs=(class_api, class_loader, jvms("5", "jvms-5.3")),
+            docs=(class_api, class_loader, jvms("5", "jvms-5.3", version)),
         ),
         ClassLoadingIssue(
             key="security-permissions",

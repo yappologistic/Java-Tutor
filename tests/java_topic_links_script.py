@@ -12,4 +12,6 @@ spec.loader.exec_module(module)
 
 TOPICS = module.TOPICS
 find_topic = module.find_topic
+links_for = module.links_for
+payload_for = module.payload_for
 render_text = module.render_text

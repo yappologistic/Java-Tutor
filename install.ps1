@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$repoUrl = "https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.zip"
+$repoUrl = if ($env:JAVA_TUTOR_ARCHIVE_URL) { $env:JAVA_TUTOR_ARCHIVE_URL } else { "https://github.com/yappologistic/Java-Tutor/archive/refs/heads/main.zip" }
 $tempRoot = $null
 $sourceKind = "local"
 
@@ -66,7 +66,11 @@ if (-not (Test-Path $source)) {
     $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("java-tutor-" + [System.Guid]::NewGuid().ToString("N"))
     $zipPath = Join-Path $tempRoot "java-tutor.zip"
     New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null
-    Invoke-WebRequest -Uri $repoUrl -OutFile $zipPath
+    if (Test-Path -LiteralPath $repoUrl) {
+        Copy-Item -LiteralPath $repoUrl -Destination $zipPath
+    } else {
+        Invoke-WebRequest -Uri $repoUrl -OutFile $zipPath
+    }
     Expand-Archive -LiteralPath $zipPath -DestinationPath $tempRoot -Force
     $source = Join-Path $tempRoot "Java-Tutor-main\java-tutor"
 }
@@ -78,11 +82,31 @@ if (-not (Test-Path $source)) {
 try {
     New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
 
-    if (Test-Path $target) {
-        Remove-Item -Recurse -Force -LiteralPath $target
+    $skillsFullPath = [System.IO.Path]::GetFullPath($skillsDir)
+    $targetFullPath = [System.IO.Path]::GetFullPath($target)
+    $expectedTarget = [System.IO.Path]::GetFullPath((Join-Path $skillsDir "java-tutor"))
+    if ($targetFullPath -ne $expectedTarget -or -not $targetFullPath.StartsWith($skillsFullPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to modify unexpected install target: $target"
     }
 
-    Copy-Item -Recurse -Path $source -Destination $target
+    $tempTarget = Join-Path $skillsDir (".java-tutor.tmp." + [System.Guid]::NewGuid().ToString("N"))
+    $backupTarget = Join-Path $skillsDir (".java-tutor.backup." + [System.Guid]::NewGuid().ToString("N"))
+    Copy-Item -Recurse -Path $source -Destination $tempTarget
+    if (-not (Test-Path (Join-Path $tempTarget "SKILL.md"))) {
+        throw "Install payload is missing SKILL.md"
+    }
+
+    $licenseSource = $null
+    $repoLicense = Join-Path $repoRoot "LICENSE"
+    $archiveLicense = if ($tempRoot) { Join-Path $tempRoot "Java-Tutor-main\LICENSE" } else { $null }
+    if (Test-Path $repoLicense) {
+        $licenseSource = $repoLicense
+    } elseif ($archiveLicense -and (Test-Path $archiveLicense)) {
+        $licenseSource = $archiveLicense
+    }
+    if ($licenseSource) {
+        Copy-Item -LiteralPath $licenseSource -Destination (Join-Path $tempTarget "LICENSE")
+    }
 
     $installSource = if ($sourceKind -eq "archive") { $repoUrl } else { $source }
     @(
@@ -90,15 +114,34 @@ try {
         "scope=$Scope"
         "installedAtUtc=$((Get-Date).ToUniversalTime().ToString("o"))"
         "source=$installSource"
-    ) | Set-Content -LiteralPath (Join-Path $target ".install-info") -Encoding UTF8
+    ) | Set-Content -LiteralPath (Join-Path $tempTarget ".install-info") -Encoding UTF8
 
-    Get-ChildItem -Path $target -Recurse -Directory -Filter "__pycache__" |
+    Get-ChildItem -Path $tempTarget -Recurse -Directory -Filter "__pycache__" |
         Remove-Item -Recurse -Force
-    Get-ChildItem -Path $target -Recurse -File -Include "*.pyc", "*.pyo" |
+    Get-ChildItem -Path $tempTarget -Recurse -File -Include "*.pyc", "*.pyo" |
         Remove-Item -Force
+
+    if (Test-Path $target) {
+        Move-Item -LiteralPath $target -Destination $backupTarget
+    }
+
+    try {
+        Move-Item -LiteralPath $tempTarget -Destination $target
+        if (Test-Path $backupTarget) {
+            Remove-Item -Recurse -Force -LiteralPath $backupTarget
+        }
+    } catch {
+        if ((Test-Path $backupTarget) -and -not (Test-Path $target)) {
+            Move-Item -LiteralPath $backupTarget -Destination $target
+        }
+        throw
+    }
 
     Write-Host "$Action completed for java-tutor ($Scope scope) at $target"
 } finally {
+    if ($tempTarget -and (Test-Path $tempTarget)) {
+        Remove-Item -Recurse -Force -LiteralPath $tempTarget
+    }
     if ($tempRoot -and (Test-Path $tempRoot)) {
         Remove-Item -Recurse -Force -LiteralPath $tempRoot
     }

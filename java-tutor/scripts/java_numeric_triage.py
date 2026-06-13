@@ -11,7 +11,6 @@ from typing import Iterable
 
 
 DEFAULT_VERSION = "25"
-JLS_BASE = "https://docs.oracle.com/javase/specs/jls/se25/html"
 
 
 @dataclass(frozen=True)
@@ -29,9 +28,9 @@ def api(path: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/docs/api/java.base/{path}"
 
 
-def jls(chapter: str, anchor: str | None = None) -> str:
+def jls(chapter: str, anchor: str | None = None, version: str = DEFAULT_VERSION) -> str:
     suffix = f"#{anchor}" if anchor else ""
-    return f"{JLS_BASE}/jls-{chapter}.html{suffix}"
+    return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/jls-{chapter}.html{suffix}"
 
 
 def issues(version: str = DEFAULT_VERSION) -> tuple[NumericIssue, ...]:
@@ -69,7 +68,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[NumericIssue, ...]:
                 "Sorting or comparing values without deciding how NaN and signed zero should behave.",
                 "Switching to BigDecimal without defining scale and rounding rules.",
             ),
-            docs=(jls("4", "jls-4.2.3"), double_api, float_api, math_api),
+            docs=(jls("4", "jls-4.2.3", version), double_api, float_api, math_api),
         ),
         NumericIssue(
             key="bigdecimal-money",
@@ -111,7 +110,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[NumericIssue, ...]:
                 "Forgetting that primitive integer overflow wraps without throwing.",
                 "Missing narrowing conversions hidden in casts, compound assignments, or APIs.",
             ),
-            docs=(jls("5"), jls("15", "jls-15.17"), math_api, big_integer),
+            docs=(jls("5", version=version), jls("15", "jls-15.17", version), math_api, big_integer),
         ),
         NumericIssue(
             key="division-rounding",
@@ -132,7 +131,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[NumericIssue, ...]:
                 "Assuming BigDecimal.divide always succeeds without scale or rounding mode.",
                 "Forgetting negative integer division truncates toward zero.",
             ),
-            docs=(jls("15", "jls-15.17.2"), big_decimal, rounding_mode, arithmetic_exception),
+            docs=(jls("15", "jls-15.17.2", version), big_decimal, rounding_mode, arithmetic_exception),
         ),
         NumericIssue(
             key="parse-format",
@@ -174,7 +173,7 @@ def issues(version: str = DEFAULT_VERSION) -> tuple[NumericIssue, ...]:
                 "Using BigDecimal.equals when scale-insensitive numeric comparison is required.",
                 "Ignoring NaN and signed zero when defining ordering or equality for floating-point values.",
             ),
-            docs=(double_api, float_api, big_decimal, jls("15", "jls-15.21.1")),
+            docs=(double_api, float_api, big_decimal, jls("15", "jls-15.21.1", version)),
         ),
     )
 

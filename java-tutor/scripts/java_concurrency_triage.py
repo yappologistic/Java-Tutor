@@ -11,7 +11,6 @@ from typing import Iterable
 
 
 DEFAULT_VERSION = "25"
-JLS_MEMORY_MODEL = "https://docs.oracle.com/javase/specs/jls/se25/html/jls-17.html"
 
 
 @dataclass(frozen=True)
@@ -27,6 +26,10 @@ class ConcurrencyConcern:
 
 def doc(path: str, version: str = DEFAULT_VERSION) -> str:
     return f"https://docs.oracle.com/en/java/javase/{version}/{path}"
+
+
+def jls_memory_model(version: str = DEFAULT_VERSION) -> str:
+    return f"https://docs.oracle.com/javase/specs/jls/se{version}/html/jls-17.html"
 
 
 def concerns(version: str = DEFAULT_VERSION) -> tuple[ConcurrencyConcern, ...]:
@@ -59,7 +62,7 @@ def concerns(version: str = DEFAULT_VERSION) -> tuple[ConcurrencyConcern, ...]:
                 "Use java.util.concurrent abstractions instead of ad hoc wait/notify or unsynchronized flags.",
                 "Document the synchronization policy next to the guarded state.",
             ),
-            docs=(JLS_MEMORY_MODEL, thread_api, concurrent_pkg),
+            docs=(jls_memory_model(version), thread_api, concurrent_pkg),
         ),
         ConcurrencyConcern(
             key="deadlock",
@@ -185,7 +188,7 @@ def concerns(version: str = DEFAULT_VERSION) -> tuple[ConcurrencyConcern, ...]:
                 "Do not use volatile as a substitute for compound atomic updates.",
                 "Prefer immutable snapshots when readers need consistent multi-field state.",
             ),
-            docs=(atomic_pkg, JLS_MEMORY_MODEL, concurrent_pkg),
+            docs=(atomic_pkg, jls_memory_model(version), concurrent_pkg),
         ),
     )
 
