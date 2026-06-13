@@ -63,7 +63,7 @@ class JavaVerifyCommandsTests(unittest.TestCase):
             source.write_text("class Hello {}", encoding="utf-8")
             result = suggest_commands(root)
             self.assertEqual(result["commands"][0]["scope"], "single-file")
-            self.assertEqual(result["commands"][0]["argv"], ["javac", str(source)])
+            self.assertEqual(result["commands"][0]["argv"], ["javac", str(source.resolve())])
 
     def test_changed_file_with_spaces_is_quoted_in_command_text(self):
         with tempfile.TemporaryDirectory() as tmp:
