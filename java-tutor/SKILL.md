@@ -21,6 +21,7 @@ Use these resources progressively:
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
+- Use `scripts/java_language_rule.py <rule-or-alias>` for exact JLS sections covering overload resolution, generics, erasure, overriding, initialization, try-with-resources, lambdas, records, and pattern variables.
 - Use `scripts/java_learning_path.py <beginner|intermediate|professional> [--goal topic]` to create official-doc-backed learning paths.
 - Use `scripts/java_migration_plan.py <source-version> <target-version>` for Java upgrade planning before suggesting migration steps.
 - Use `scripts/java_performance_triage.py <symptom>` for high CPU, GC pauses, memory leaks, thread contention, startup, or I/O bottlenecks before suggesting performance fixes.
@@ -54,9 +55,10 @@ For concept explanations:
 1. Define the concept precisely.
 2. Show a minimal Java example.
 3. Show one realistic usage or pitfall.
-4. Run `scripts/java_feature_compat.py <topic> --version <java-version>` when the concept is a version-gated Java feature.
-5. Mention version constraints, preview/incubator status, or deprecations when relevant.
-6. Link to official docs.
+4. Run `scripts/java_language_rule.py <rule-or-alias>` when the concept depends on Java language syntax, type checking, initialization, overload resolution, generics, lambdas, records, or pattern scope.
+5. Run `scripts/java_feature_compat.py <topic> --version <java-version>` when the concept is a version-gated Java feature.
+6. Mention version constraints, preview/incubator status, or deprecations when relevant.
+7. Link to official docs.
 
 For learning plans:
 

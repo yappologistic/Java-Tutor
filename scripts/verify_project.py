@@ -32,6 +32,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
+    SKILL_DIR / "scripts" / "java_language_rule.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
     SKILL_DIR / "scripts" / "java_performance_triage.py",
@@ -91,6 +92,7 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/atomic/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/concurrent/locks/package-summary.html",
     "https://docs.oracle.com/en/java/javase/25/core/virtual-threads.html",
+    "https://docs.oracle.com/javase/specs/jls/se25/html/jls-9.html",
 ]
 RELEASE_FACT_CHECKS = [
     {
@@ -161,6 +163,15 @@ def concurrency_triage_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_concurrency_triage.official_urls(java_concurrency_triage.concerns())
+
+
+def language_rule_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_language_rule
+    finally:
+        sys.path.pop(0)
+    yield from java_language_rule.official_urls(java_language_rule.rules())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -364,6 +375,7 @@ def check_official_links() -> None:
                 *review_urls(),
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
+                *language_rule_urls(),
                 *learning_path_urls(),
                 *version_consistency_urls(),
                 *performance_urls(),

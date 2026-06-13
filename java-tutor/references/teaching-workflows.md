@@ -46,6 +46,8 @@ Use `scripts/java_version_consistency.py <project-root>` when Maven, Gradle, `.j
 
 Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending modern Java features to projects with a declared source, target, release, or runtime baseline.
 
+Use `scripts/java_language_rule.py <rule-or-alias>` before explaining or fixing tricky syntax/type-system behavior such as overload resolution, generic inference, erasure, overriding, initialization order, try-with-resources, lambda capture, records, or pattern-variable scope.
+
 Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common compiler errors such as missing symbols, bad imports/classpaths, incompatible types, overload failures, definite assignment, public type/file name mismatches, and source/release mismatches.
 
 Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common exception first checks and official API links before proposing a bug fix.
@@ -115,6 +117,8 @@ python java-tutor/scripts/java_doc_link.py release-notes --version 26
 python java-tutor/scripts/java_deprecation_audit.py --target 25 --artifact target/app.jar
 python java-tutor/scripts/java_feature_compat.py records --version 11
 python java-tutor/scripts/java_feature_compat.py virtual-threads --version 21
+python java-tutor/scripts/java_language_rule.py overload
+python java-tutor/scripts/java_language_rule.py 'effectively final' --json
 python java-tutor/scripts/java_compile_error_triage.py 'error: cannot find symbol'
 python java-tutor/scripts/java_compile_error_triage.py release-source-target --key
 python java-tutor/scripts/java_concurrency_triage.py data-race

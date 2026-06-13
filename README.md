@@ -10,6 +10,7 @@ The skill is designed for beginners through senior Java developers. It routes an
 - Builds official-doc-backed learning paths with `java-tutor/scripts/java_learning_path.py`.
 - Fixes Java compile errors, runtime exceptions, test failures, and build issues.
 - Checks Java feature compatibility with `java-tutor/scripts/java_feature_compat.py`.
+- Routes language-rule questions to exact JLS sections with `java-tutor/scripts/java_language_rule.py`.
 - Triage common `javac` diagnostics with `java-tutor/scripts/java_compile_error_triage.py`.
 - Triage Java concurrency symptoms with `java-tutor/scripts/java_concurrency_triage.py`.
 - Reviews Java code for correctness, compatibility, concurrency, resources, and maintainability.
