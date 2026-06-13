@@ -32,6 +32,7 @@ REQUIRED_FILES = [
     SKILL_DIR / "scripts" / "java_deprecation_audit.py",
     SKILL_DIR / "scripts" / "java_exception_triage.py",
     SKILL_DIR / "scripts" / "java_feature_compat.py",
+    SKILL_DIR / "scripts" / "java_jdk_tool.py",
     SKILL_DIR / "scripts" / "java_language_rule.py",
     SKILL_DIR / "scripts" / "java_learning_path.py",
     SKILL_DIR / "scripts" / "java_migration_plan.py",
@@ -54,6 +55,12 @@ OFFICIAL_URLS = [
     "https://docs.oracle.com/en/java/javase/26/",
     "https://docs.oracle.com/en/java/javase/25/docs/api/",
     "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jar.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javadoc.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jfr.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jlink.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html",
+    "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jshell.html",
     "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jdeprscan.html",
     "https://docs.oracle.com/en/java/javase/25/docs/specs/man/jdeps.html",
     "https://docs.oracle.com/en/java/javase/25/security/index.html",
@@ -172,6 +179,15 @@ def language_rule_urls() -> Iterable[str]:
     finally:
         sys.path.pop(0)
     yield from java_language_rule.official_urls(java_language_rule.rules())
+
+
+def jdk_tool_urls() -> Iterable[str]:
+    sys.path.insert(0, str(SKILL_DIR / "scripts"))
+    try:
+        import java_jdk_tool
+    finally:
+        sys.path.pop(0)
+    yield from java_jdk_tool.official_urls(java_jdk_tool.tools())
 
 
 def learning_path_urls() -> Iterable[str]:
@@ -375,6 +391,7 @@ def check_official_links() -> None:
                 *review_urls(),
                 *compile_error_urls(),
                 *concurrency_triage_urls(),
+                *jdk_tool_urls(),
                 *language_rule_urls(),
                 *learning_path_urls(),
                 *version_consistency_urls(),

@@ -18,6 +18,7 @@ Use these resources progressively:
 - Use `scripts/java_doc_link.py` to generate likely official documentation links for JDK APIs, JLS/JVMS sections, JEPs, release notes, tutorials, and dev.java learning pages.
 - Use `scripts/java_deprecation_audit.py --target <java-version> --artifact <jar-or-classes>` before migration work involving deprecated, for-removal, removed, or internal APIs.
 - Use `scripts/java_feature_compat.py <topic> --version <java-version>` before recommending version-gated Java features.
+- Use `scripts/java_jdk_tool.py <tool-or-task>` for official JDK tool manuals and first checks for `java`, `javac`, `jar`, `javadoc`, `jshell`, `jdeps`, `jdeprscan`, `jlink`, `jpackage`, `jcmd`, and `jfr`.
 - Use `scripts/java_compile_error_triage.py "<javac-diagnostic>"` for common Java compiler errors before proposing a compile fix.
 - Use `scripts/java_concurrency_triage.py <concern>` for data races, deadlocks, interruption/cancellation, executor lifecycle, virtual threads, concurrent collections, or atomicity concerns.
 - Use `scripts/java_exception_triage.py "<exception-or-stack-trace>"` for common Java exception debugging before proposing a fix.
@@ -130,9 +131,10 @@ When the user is working in a Java repository:
 3. Run `scripts/java_version_consistency.py <project-root>` when multiple version hints appear or source/target/runtime alignment matters.
 4. Use the project's existing package structure, style, test framework, formatter, and dependency management.
 5. Run `scripts/java_verify_commands.py <project-root> [--changed-file path]` to identify verification commands.
-6. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
-7. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
-8. Explain any unverified assumptions in the final answer.
+6. Run `scripts/java_jdk_tool.py <tool-or-task>` when the answer depends on JDK command-line tooling options or diagnostics.
+7. Run the narrowest meaningful verification first, then broader tests if risk justifies it.
+8. Avoid changing source/target compatibility, dependencies, or build plugins unless necessary for the requested fix.
+9. Explain any unverified assumptions in the final answer.
 
 ## Documentation Footer
 
